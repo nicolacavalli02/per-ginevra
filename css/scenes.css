@@ -90,9 +90,24 @@
   --grana: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .17 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 
   /* Sera di festa: la luce calda delle lucine dall'alto e un alone dove sta la busta. */
+  /* Le sfumature hanno molti passaggi perché la luce si spenga piano, senza fasce visibili. */
   background:
-    radial-gradient(95% 42% at 50% 0%, rgba(255, 176, 96, 0.3), transparent 72%),
-    radial-gradient(75% 38% at 50% 56%, rgba(255, 190, 120, 0.17), transparent 70%),
+    radial-gradient(
+      130% 58% at 50% -6%,
+      rgba(255, 178, 100, 0.34) 0%,
+      rgba(255, 176, 98, 0.24) 18%,
+      rgba(255, 172, 94, 0.14) 38%,
+      rgba(255, 168, 90, 0.07) 58%,
+      rgba(255, 164, 86, 0.025) 78%,
+      transparent 100%
+    ),
+    radial-gradient(
+      85% 42% at 50% 55%,
+      rgba(255, 196, 130, 0.1) 0%,
+      rgba(255, 190, 124, 0.06) 40%,
+      rgba(255, 186, 120, 0.02) 72%,
+      transparent 100%
+    ),
     linear-gradient(180deg, #151b2c 0%, #181626 55%, #0f0e17 100%);
   font-family: "Bodoni Moda", "Noto Serif", Georgia, serif;
   cursor: pointer;
@@ -112,8 +127,9 @@
   border-radius: 50%;
   translate: -50% -50%;
   opacity: var(--o);
-  background: radial-gradient(circle, rgba(var(--c), 0.55) 0 56%, rgba(var(--c), 0.85) 63%, transparent 70%);
-  animation: festa-respiro calc(5s + var(--k) * 0.7s) ease-in-out calc(var(--k) * -1.3s) infinite alternate;
+  /* Un disco di luce pieno con il bordo morbido, senza anello. */
+  background: radial-gradient(circle, rgba(var(--c), 0.6) 0%, rgba(var(--c), 0.56) 46%, rgba(var(--c), 0.34) 60%, rgba(var(--c), 0.1) 68%, transparent 74%);
+  animation: festa-respiro calc(5s + var(--k) * 0.7s) ease-in-out calc(var(--k) * -1.3s - var(--ora, 0s)) infinite alternate;
 }
 
 .festa__luce-lontana--a {
@@ -146,13 +162,13 @@
   width: 100cqw;
   height: 30cqw;
   transform-origin: 50% -40cqw;
-  animation: festa-dondolio 7s ease-in-out infinite alternate;
+  animation: festa-dondolio 7s ease-in-out calc(0s - var(--ora, 0s)) infinite alternate;
 }
 
 .festa__filo--dietro {
   opacity: 0.72;
   animation-duration: 9s;
-  animation-delay: -3s;
+  animation-delay: calc(-3s - var(--ora, 0s));
 }
 
 .festa__filo svg {
@@ -177,7 +193,7 @@
   position: absolute;
   width: 0;
   height: 0;
-  animation: festa-tremolio calc(2.6s + var(--k) * 0.31s) ease-in-out calc(var(--k) * -0.9s) infinite;
+  animation: festa-tremolio calc(2.6s + var(--k) * 0.31s) ease-in-out calc(var(--k) * -0.9s - var(--ora, 0s)) infinite;
 }
 
 .festa__lampadina::before {
@@ -185,11 +201,19 @@
   position: absolute;
   left: 0;
   top: calc(1.6cqw * var(--r));
-  width: calc(26cqw * var(--r));
-  height: calc(26cqw * var(--r));
+  width: calc(24cqw * var(--r));
+  height: calc(24cqw * var(--r));
   translate: -50% -50%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 214, 150, 0.55) 0%, rgba(255, 180, 100, 0.2) 22%, rgba(255, 160, 80, 0.06) 45%, transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 150, 0.5) 0%,
+    rgba(255, 196, 124, 0.24) 12%,
+    rgba(255, 180, 104, 0.1) 28%,
+    rgba(255, 170, 92, 0.04) 46%,
+    rgba(255, 164, 86, 0.012) 60%,
+    transparent 70%
+  );
 }
 
 .festa__lampadina::after {
@@ -226,12 +250,28 @@
   position: absolute;
   bottom: 0;
   z-index: 2;
-  width: 1.8cqw;
-  height: 20cqw;
-  border-radius: 0.5cqw 0.5cqw 0 0;
-  background: linear-gradient(90deg, #7d6a3c, #f4e4a9 42%, #c2a55c 62%, #6a582f);
+  width: 1.4cqw;
+  height: 24cqw;
+  border-radius: 0.3cqw 0.3cqw 0 0;
+  /* Tubo di stagnola dorata, con le righe diagonali dell'incarto e la punta annerita. */
+  background:
+    linear-gradient(180deg, #1c1611 0 0.9cqw, transparent 1.6cqw),
+    repeating-linear-gradient(118deg, transparent 0 1.1cqw, rgba(255, 255, 255, 0.34) 1.1cqw 1.4cqw),
+    linear-gradient(90deg, #6a582f, #f6e8b2 40%, #c9ac62 62%, #5a4a27);
   transform: translateY(110%);
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+  pointer-events: none;
+}
+
+/* La luce calda che le fontane gettano intorno: la sua opacità segue la forza del getto. */
+.festa__riverbero {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  opacity: 0;
+  background:
+    radial-gradient(62% 36% at 11% 100%, rgba(255, 196, 120, 0.34) 0%, rgba(255, 180, 100, 0.14) 40%, transparent 100%),
+    radial-gradient(62% 36% at 89% 100%, rgba(255, 196, 120, 0.34) 0%, rgba(255, 180, 100, 0.14) 40%, transparent 100%);
   pointer-events: none;
 }
 
@@ -266,19 +306,33 @@
   position: absolute;
   inset: 0;
   z-index: 8;
-  background: radial-gradient(110% 48% at 50% 0%, rgba(255, 184, 104, 0.13), transparent 72%);
+  background: radial-gradient(
+    120% 55% at 50% -4%,
+    rgba(255, 184, 104, 0.13) 0%,
+    rgba(255, 180, 100, 0.08) 30%,
+    rgba(255, 176, 96, 0.03) 62%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 
-/* Grana della carta su tutta la scena. */
-.biglietto::after {
+/* Grana della carta: solo sulla busta (il cartoncino e il rotolo hanno la loro). */
+.busta__tasca::after,
+.busta__faccia--fuori::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 9;
   background: var(--grana);
-  opacity: 0.45;
   pointer-events: none;
+}
+
+.busta__faccia--fuori::after {
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Sulla tasca la grana segue la sagoma: non deve velare il cartoncino dentro la scollatura. */
+.busta__tasca::after {
+  clip-path: polygon(0 0, 50% 46%, 100% 0, 100% 100%, 0 100%);
 }
 
 /* La busta è un contenitore fermo: si muovono i suoi pezzi, così il cartoncino
@@ -611,14 +665,49 @@
   animation: none;
 }
 
+/* Le due metà restano piene: schizzano di lato, poi cadono ruotando e spariscono solo in fondo. */
 .is-rotto .sigillo__meta--sx {
-  transform: translate(-3cqw, 2.5cqw) rotate(-18deg);
-  opacity: 0;
+  animation: sigillo-cade-sx 0.95s forwards;
 }
 
 .is-rotto .sigillo__meta--dx {
-  transform: translate(3cqw, 2.5cqw) rotate(18deg);
-  opacity: 0;
+  animation: sigillo-cade-dx 1.05s forwards;
+}
+
+@keyframes sigillo-cade-sx {
+  0% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  16% {
+    transform: translate(-2cqw, -0.7cqw) rotate(-11deg);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.5);
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-9cqw, 85cqw) rotate(-95deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sigillo-cade-dx {
+  0% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  16% {
+    transform: translate(2.2cqw, -0.5cqw) rotate(13deg);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.5);
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(7cqw, 92cqw) rotate(120deg);
+    opacity: 0;
+  }
 }
 
 .is-aperta .busta__lembo {
@@ -637,7 +726,7 @@
 .is-sola .busta__tasca,
 .is-sola .busta__lembo {
   opacity: 0;
-  transition: transform 0.8s cubic-bezier(0.5, 0, 0.8, 0.4), opacity 0.45s ease 0.3s;
+  transition: transform 0.65s cubic-bezier(0.5, 0, 0.9, 0.5), opacity 0.3s ease 0.4s;
 }
 
 .is-sola .busta__retro,
@@ -649,8 +738,11 @@
   transform: translateY(120cqh) rotateX(180deg);
 }
 
+/* Prima la busta cade via, poi il cartoncino (ancora della sua misura "in busta")
+   si ingrandisce e va al centro: così non risulta mai più largo della busta che lo contiene. */
 .is-sola .cartoncino {
   transform: translateY(-6cqw) scale(1);
+  transition: transform 0.85s cubic-bezier(0.3, 0, 0.2, 1) 0.35s;
 }
 
 .is-scritta .cartoncino .rivela {
@@ -677,5 +769,145 @@
     height: 5cqw;
     animation: none;
   }
+}
+
+/* ---------- Scena 2: il cartoncino si arrotola in una pergamena ---------- */
+
+/* Stesso posto in cui la scena 1 lascia il cartoncino: al centro del palco. */
+.pergamena__foglio {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 80cqw;
+  height: 112cqw;
+  translate: -50% -50%;
+}
+
+.pergamena .cartoncino {
+  left: 0;
+  top: 0;
+  translate: none;
+  transform: none;
+  transition: none;
+}
+
+.pergamena .cartoncino .rivela {
+  transition: none;
+}
+
+.pergamena .cartoncino__angolo {
+  display: none;
+}
+
+/* Il rotolo: un cilindro di carta (si vede il retro bianco del cartoncino). */
+.rotolo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  border-radius: 1.6cqw / 50%;
+  background:
+    var(--grana),
+    linear-gradient(180deg, #b3a78f 0%, #e7e0d0 17%, #fffdf8 42%, #f0e9da 68%, #a39780 100%);
+  box-shadow:
+    0 -1.2cqw 2.6cqw rgba(50, 35, 20, 0.34),
+    0 1.6cqw 3cqw rgba(0, 0, 0, 0.42);
+}
+
+/* L'estremità a vista, con gli strati di carta arrotolata. */
+.rotolo::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  aspect-ratio: 0.38;
+  translate: 50% 0;
+  border-radius: 50%;
+  background: repeating-radial-gradient(ellipse closest-side at 50% 50%, #c4b79c 0 9%, #f7f2e7 9% 27%);
+  box-shadow: inset 0 0 0 0.15cqw #b1a58b;
+}
+
+/* Si raddrizza con un piccolo rimbalzo, come un oggetto che si assesta. */
+.is-arrotolata .rotolo {
+  transition: transform 0.8s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+/* Nastro: il centro del rotolo sta nel punto (15, 12) del disegno. */
+.nastro {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  width: 30cqw;
+  height: 34cqw;
+  translate: -50% calc(-12 / 34 * 100%);
+  pointer-events: none;
+}
+
+.nastro svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* La striscia di raso: si srotola dal bordo alto del palco fino al centro del rotolo,
+   restando sempre in vista; poi il capo in alto cade e il nastro si raccoglie nel fiocco. */
+.nastro__caduta {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 4;
+  width: 2.6cqw;
+  height: 50cqh;
+  margin-left: -1.3cqw;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 30%, rgba(255, 255, 255, 0.08) 60%, transparent),
+    linear-gradient(90deg, #7c1416, #c52c2e 40%, #8e1b1d);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  pointer-events: none;
+}
+
+.is-nastro .nastro__caduta {
+  transform: none;
+  transition: transform 0.85s cubic-bezier(0.3, 0.1, 0.3, 1);
+}
+
+.is-fiocco .nastro__caduta {
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 0.38s cubic-bezier(0.6, 0, 0.9, 0.4);
+}
+
+.nastro__fascia {
+  transform: scaleY(0);
+  transform-origin: 15px 7px;
+  transition: transform 0.25s ease-out;
+}
+
+.nastro__anello,
+.nastro__nodo {
+  transform: scale(0);
+  transform-origin: 15px 12px;
+  transition: transform 0.45s cubic-bezier(0.3, 1.7, 0.5, 1) 0.12s;
+}
+
+.nastro__coda {
+  transform: scaleY(0);
+  transform-origin: 15px 13px;
+  transition: transform 0.35s ease-out 0.28s;
+}
+
+.is-fiocco .nastro__fascia,
+.is-fiocco .nastro__anello,
+.is-fiocco .nastro__nodo,
+.is-fiocco .nastro__coda {
+  transform: none;
 }
 

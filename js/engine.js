@@ -1,6 +1,6 @@
 // Gestore delle scene: ne monta una alla volta e ripulisce quella precedente.
 //
-// Una scena è un oggetto { mount(el, ctx) }. mount può restituire una funzione di pulizia.
+// Una scena è un oggetto { mount(el, ctx), taglio? }. mount può restituire una funzione di pulizia.
 // ctx offre:
 //   next()               passa alla scena successiva (vale una volta sola)
 //   after(ms, fn)        timer annullato da solo al cambio scena
@@ -24,7 +24,15 @@ export function createEngine({ stage, scenes, audio, content }) {
     const i = Math.max(0, Math.min(scenes.length - 1, n));
     pulisci();
 
+    // Una scena con "taglio: true" comincia identica a come finisce la precedente:
+    // entra con uno stacco netto invece della dissolvenza, così il cambio non si vede.
+    const taglio = scenes[i].taglio === true;
+
     for (const vecchia of stage.querySelectorAll('.scene')) {
+      if (taglio) {
+        vecchia.remove();
+        continue;
+      }
       vecchia.classList.remove('is-active');
       vecchia.classList.add('is-leaving');
       setTimeout(() => vecchia.remove(), DISSOLVENZA);
@@ -61,9 +69,16 @@ export function createEngine({ stage, scenes, audio, content }) {
     const fine = scenes[i].mount(el, ctx);
     if (typeof fine === 'function') pulizie.push(fine);
 
-    // Forza un reflow così la dissolvenza in entrata parte davvero.
-    void el.offsetWidth;
-    el.classList.add('is-active');
+    if (taglio) {
+      el.style.transition = 'none';
+      el.classList.add('is-active');
+      void el.offsetWidth;
+      el.style.transition = '';
+    } else {
+      // Forza un reflow così la dissolvenza in entrata parte davvero.
+      void el.offsetWidth;
+      el.classList.add('is-active');
+    }
   }
 
   return {

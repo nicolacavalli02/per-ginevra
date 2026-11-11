@@ -14,15 +14,15 @@ const ARRIVO = {
   calma: 4000, // se lei aspetta, le fontane si abbassano
 };
 
-// Momenti della sequenza automatica, in ms dal primo tap (in tutto 6 s).
+// Momenti della sequenza automatica, in ms dal primo tap (in tutto 6,3 s).
 const TEMPI = {
   fontaneSpente: 1100, // le fontane si spengono
   lembo: 300, // il lembo comincia ad alzarsi
   dietro: 650, // a metà apertura il lembo passa dietro al cartoncino
   esce: 1350, // un attimo per vedere la fodera, poi il cartoncino sale dalla busta
-  sola: 2200, // la busta cade, il cartoncino va al centro
-  scritta: 3000, // il testo compare, un elemento alla volta
-  pronta: 6000, // si può toccare per andare avanti
+  sola: 2200, // la busta cade, poi il cartoncino va al centro
+  scritta: 3300, // il testo compare, un elemento alla volta
+  pronta: 6300, // si può toccare per andare avanti
 };
 
 const BUSTA = `
@@ -98,7 +98,9 @@ export default {
       el.classList.add('is-rotto');
       // Il sigillo che si spezza fa scoppiare i coriandoli e ravviva le fontane,
       // che poi si spengono per lasciare leggere il cartoncino.
-      festa.coriandoli(0.5, 0.5 + (0.06 * el.clientWidth) / el.clientHeight);
+      const altezzaSigillo = 0.5 + (0.06 * el.clientWidth) / el.clientHeight;
+      festa.frammenti(0.5, altezzaSigillo);
+      festa.coriandoli(0.5, altezzaSigillo);
       festa.fontane(1);
       ctx.after(TEMPI.fontaneSpente, () => festa.fontane(0));
       ctx.after(TEMPI.lembo, stato('is-aperta'));
