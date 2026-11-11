@@ -1,0 +1,97 @@
+/* Base: reset, palco verticale, pulsante mute. Gli stili delle scene stanno in scenes.css. */
+
+:root {
+  --sfondo-esterno: #14110f;
+  --carta: #f6f1e7;
+  --inchiostro: #2a2622;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--sfondo-esterno);
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--inchiostro);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Su telefono occupa tutto lo schermo; su desktop è una colonna 9:16 centrata. */
+#frame {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  width: min(100vw, calc(100dvh * 9 / 16));
+  margin: 0 auto;
+}
+
+/* container-type: le scene possono misurarsi sul palco con le unità cqw / cqh. */
+#stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--carta);
+  container-type: size;
+  touch-action: none;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  font-size: 4.4cqw;
+}
+
+.scene.is-active {
+  opacity: 1;
+}
+
+.scene.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#mute {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  cursor: pointer;
+}
+
+#mute:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#mute .mute__croce,
+#mute.is-muted .mute__onde {
+  display: none;
+}
+
+#mute.is-muted .mute__croce {
+  display: block;
+}

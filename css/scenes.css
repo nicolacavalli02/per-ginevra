@@ -1,0 +1,78 @@
+/* Stili delle scene. Cresce una scena alla volta. */
+
+/* ---------- Segnaposto (sparisce man mano che le scene vere arrivano) ---------- */
+
+.segnaposto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1em;
+  padding: 10cqw;
+  text-align: center;
+  cursor: pointer;
+}
+
+.segnaposto::before {
+  content: "";
+  position: absolute;
+  inset: 4cqw;
+  border: 2px dashed rgba(42, 38, 34, 0.25);
+  border-radius: 3cqw;
+  pointer-events: none;
+}
+
+.segnaposto p,
+.segnaposto h1 {
+  margin: 0;
+}
+
+.segnaposto__num {
+  font-size: 0.75em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.segnaposto__titolo {
+  font-size: 1.7em;
+  line-height: 1.15;
+}
+
+.segnaposto__capisce {
+  font-size: 0.85em;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.segnaposto__passo {
+  min-height: 4.5em;
+  margin-top: 1.5em !important;
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+.segnaposto__barra {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(42, 38, 34, 0.15);
+  overflow: hidden;
+}
+
+.segnaposto__barra[hidden] {
+  display: block;
+  visibility: hidden;
+}
+
+.segnaposto__barra i {
+  display: block;
+  height: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.segnaposto__gesto {
+  min-height: 1.4em;
+  font-size: 0.8em;
+  opacity: 0.55;
+}
