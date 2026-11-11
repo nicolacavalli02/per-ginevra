@@ -5,8 +5,20 @@
 export default {
   titoloPagina: 'Per Ginevra',
 
+  // Scena 1: la busta e il cartoncino.
   biglietto: {
+    busta: 'Per Ginevra', // scritto a mano sulla busta
+    sigillo: 'G',
+    titolo: 'Congratulazioni',
     destinataria: 'Dott.ssa Ginevra',
+    messaggio: [
+      'Ce l’hai fatta, amore!',
+      'È stato un percorso lungo e a tratti complicato, ma ho sempre creduto in te.',
+      'Ora bisogna festeggiare.',
+    ],
+    firma: 'Nicola',
+    ps: 'P.S. Non finisce qui.',
+    data: '20 novembre 2026',
   },
 
   tesi: {

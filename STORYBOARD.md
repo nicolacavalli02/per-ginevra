@@ -4,7 +4,7 @@ Ogni scena dice cosa deve capire lei, come interagisce e quali elementi sono fis
 
 | # | Scena | Interazione | Durata | Cosa capisce lei |
 |---|---|---|---|---|
-| 1 | Biglietto di congratulazioni | tap | ~15 s | niente, è un biglietto |
+| 1 | Busta e biglietto di congratulazioni | tap | ~15 s | è un biglietto, ma non finisce lì |
 | 2 | La pergamena si arrotola | automatica | ~6 s | niente |
 | 3 | Processo BPMN | click | ~45 s | c'è un regalo, e decide lui |
 | 4 | Continuous Improvement → 改善 | automatica | ~8 s | Giappone |
@@ -14,7 +14,7 @@ Ogni scena dice cosa deve capire lei, come interagisce e quali elementi sono fis
 
 ## Elementi fissi
 
-1. **Biglietto**. Un classico biglietto di laurea per la "Dott.ssa Ginevra". Apre l'esperienza, e il primo tap attiva l'audio.
+1. **Biglietto**. Atmosfera di festa serale, con fili di lucine. Scende una busta con scritto "Per Ginevra", chiusa da un sigillo di ceralacca, e al suo arrivo si accendono due fontane luminose. Il primo tap la apre tra i coriandoli e attiva l'audio. Ne esce un classico biglietto di laurea per la "Dott.ssa Ginevra", che si chiude con "P.S. Non finisce qui."
 
 2. **Pergamena**. Il biglietto si arrotola come un diploma, chiuso da un nastro rosso. Non deve dare nessun indizio. Questa pergamena **torna nella scena 5**.
 

@@ -76,3 +76,606 @@
   font-size: 0.8em;
   opacity: 0.55;
 }
+
+/* ---------- Scena 1: busta con sigillo e cartoncino ---------- */
+
+.biglietto {
+  --notte: #14131f;
+  --carta: #fbf8f2;
+  --rosso: #9b1c1f; /* inchiostro: cornice, testo, scritta sulla busta */
+  --ceralacca: #a8201f;
+  --ceralacca-scura: #6f1213;
+  --ceralacca-luce: #d5514a;
+  --fodera: #7d1a1a;
+  --grana: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .17 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+
+  /* Sera di festa: la luce calda delle lucine dall'alto e un alone dove sta la busta. */
+  background:
+    radial-gradient(95% 42% at 50% 0%, rgba(255, 176, 96, 0.3), transparent 72%),
+    radial-gradient(75% 38% at 50% 56%, rgba(255, 190, 120, 0.17), transparent 70%),
+    linear-gradient(180deg, #151b2c 0%, #181626 55%, #0f0e17 100%);
+  font-family: "Bodoni Moda", "Noto Serif", Georgia, serif;
+  cursor: pointer;
+}
+
+/* --- Festa: luci sfocate, fili di lucine, candele, particelle --- */
+
+.festa {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.festa__luce-lontana {
+  position: absolute;
+  border-radius: 50%;
+  translate: -50% -50%;
+  opacity: var(--o);
+  background: radial-gradient(circle, rgba(var(--c), 0.55) 0 56%, rgba(var(--c), 0.85) 63%, transparent 70%);
+  animation: festa-respiro calc(5s + var(--k) * 0.7s) ease-in-out calc(var(--k) * -1.3s) infinite alternate;
+}
+
+.festa__luce-lontana--a {
+  --c: 255, 196, 120;
+}
+
+.festa__luce-lontana--b {
+  --c: 255, 160, 90;
+}
+
+.festa__luce-lontana--c {
+  --c: 255, 224, 176;
+}
+
+@keyframes festa-respiro {
+  from {
+    opacity: calc(var(--o) * 0.45);
+    transform: translate(-1.5cqw, 1cqw) scale(0.94);
+  }
+  to {
+    opacity: var(--o);
+    transform: translate(1.5cqw, -1cqw) scale(1.05);
+  }
+}
+
+.festa__filo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100cqw;
+  height: 30cqw;
+  transform-origin: 50% -40cqw;
+  animation: festa-dondolio 7s ease-in-out infinite alternate;
+}
+
+.festa__filo--dietro {
+  opacity: 0.72;
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+
+.festa__filo svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+@keyframes festa-dondolio {
+  from {
+    transform: rotate(-0.7deg);
+  }
+  to {
+    transform: rotate(0.7deg);
+  }
+}
+
+/* Lampadina: l'alone è ::before, il vetro acceso è ::after. */
+.festa__lampadina {
+  position: absolute;
+  width: 0;
+  height: 0;
+  animation: festa-tremolio calc(2.6s + var(--k) * 0.31s) ease-in-out calc(var(--k) * -0.9s) infinite;
+}
+
+.festa__lampadina::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(1.6cqw * var(--r));
+  width: calc(26cqw * var(--r));
+  height: calc(26cqw * var(--r));
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 150, 0.55) 0%, rgba(255, 180, 100, 0.2) 22%, rgba(255, 160, 80, 0.06) 45%, transparent 68%);
+}
+
+.festa__lampadina::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(2.5cqw * var(--r));
+  height: calc(3.3cqw * var(--r));
+  translate: -50% 0;
+  border-radius: 46% 46% 50% 50% / 38% 38% 62% 62%;
+  background: radial-gradient(circle at 50% 58%, #fffdf4 0 22%, #ffe3a3 48%, #f5a93f 82%, #c9792a 100%);
+  box-shadow: 0 0 calc(2.2cqw * var(--r)) rgba(255, 196, 110, 0.9);
+}
+
+@keyframes festa-tremolio {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  38% {
+    opacity: 0.84;
+  }
+  52% {
+    opacity: 0.98;
+  }
+  74% {
+    opacity: 0.9;
+  }
+}
+
+/* Candele fontana: due tubi dorati che salgono dal basso quando arriva la busta. */
+.festa__candela {
+  position: absolute;
+  bottom: 0;
+  z-index: 2;
+  width: 1.8cqw;
+  height: 20cqw;
+  border-radius: 0.5cqw 0.5cqw 0 0;
+  background: linear-gradient(90deg, #7d6a3c, #f4e4a9 42%, #c2a55c 62%, #6a582f);
+  transform: translateY(110%);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+  pointer-events: none;
+}
+
+.festa__candela--sx {
+  left: 10cqw;
+}
+
+.festa__candela--dx {
+  right: 10cqw;
+}
+
+.is-arrivata .festa__candela {
+  transform: none;
+}
+
+.is-sola .festa__candela {
+  transform: translateY(110%);
+  transition-duration: 0.8s;
+}
+
+.festa__particelle {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Velo di luce calda dall'alto, sopra a tutto: le lucine "illuminano" busta e cartoncino. */
+.festa__alone {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: radial-gradient(110% 48% at 50% 0%, rgba(255, 184, 104, 0.13), transparent 72%);
+  pointer-events: none;
+}
+
+/* Grana della carta su tutta la scena. */
+.biglietto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: var(--grana);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* La busta è un contenitore fermo: si muovono i suoi pezzi, così il cartoncino
+   può stare tra il retro e la tasca. */
+.busta {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 6cqw);
+  z-index: 3;
+  width: 70cqw;
+  height: 92cqw;
+  translate: -50% -50%;
+  perspective: 220cqw;
+  animation: busta-arriva 1.4s cubic-bezier(0.25, 0.7, 0.3, 1) backwards;
+}
+
+/* La busta scende dall'alto ondeggiando e si posa con un piccolo rimbalzo. */
+@keyframes busta-arriva {
+  0% {
+    transform: translateY(-125cqh) rotate(-13deg);
+  }
+  62% {
+    transform: translateY(1.8cqw) rotate(2deg);
+  }
+  80% {
+    transform: translateY(-0.9cqw) rotate(-0.6deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.busta__retro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 1cqw;
+  background: var(--fodera);
+  box-shadow: 0 3cqw 8cqw rgba(0, 0, 0, 0.45);
+}
+
+.busta__tasca {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 1cqw;
+}
+
+.busta__tasca svg,
+.busta__faccia svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* "Per Ginevra", scritto a mano sul lembo inferiore. */
+.busta__scritta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72%;
+  font-family: "Pinyon Script", cursive;
+  font-size: 8.6cqw;
+  line-height: 1;
+  text-align: center;
+  color: #5e1517;
+  rotate: -4deg;
+}
+
+.busta__lembo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  width: 100%;
+  height: 50%;
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.busta__faccia {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.busta__faccia--dentro {
+  transform: rotateX(180deg);
+}
+
+/* Sigillo di ceralacca: due metà che si separano lungo una crepa. */
+.sigillo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: 16cqw;
+  height: 16cqw;
+  translate: -50% -50%;
+  animation: sigillo-respiro 2.4s ease-in-out 1.6s infinite;
+}
+
+.sigillo::before,
+.sigillo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition: opacity 0.2s ease;
+}
+
+.sigillo::before {
+  box-shadow: 0 1cqw 2.2cqw rgba(0, 0, 0, 0.4);
+}
+
+.sigillo::after {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  animation: sigillo-onda 2.4s ease-out 1.6s infinite;
+}
+
+.sigillo__meta {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 47% 53% 51% 49% / 52% 48% 52% 48%;
+  background: radial-gradient(circle at 36% 30%, var(--ceralacca-luce), var(--ceralacca) 45%, var(--ceralacca-scura) 100%);
+  transition: transform 0.45s cubic-bezier(0.3, 0.6, 0.4, 1), opacity 0.3s ease 0.15s;
+}
+
+.sigillo__meta::before {
+  content: "";
+  position: absolute;
+  inset: 2cqw;
+  border: 0.35cqw solid rgba(60, 5, 5, 0.3);
+  border-radius: 50%;
+  box-shadow: 0 0.2cqw 0 rgba(255, 255, 255, 0.16);
+}
+
+.sigillo__meta span {
+  font-size: 7.2cqw;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ceralacca-scura);
+  text-shadow: 0 0.25cqw 0 rgba(255, 255, 255, 0.2);
+}
+
+.sigillo__meta--sx {
+  clip-path: polygon(0 0, 56% 0, 44% 26%, 58% 50%, 43% 74%, 52% 100%, 0 100%);
+}
+
+.sigillo__meta--dx {
+  clip-path: polygon(56% 0, 100% 0, 100% 100%, 52% 100%, 43% 74%, 58% 50%, 44% 26%);
+}
+
+@keyframes sigillo-respiro {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes sigillo-onda {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* Cartoncino: dentro la busta è ridotto, poi va al centro a grandezza piena.
+   Carta bianca di cotone, tutto stampato e scritto in un solo rosso. */
+.cartoncino {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80cqw;
+  height: 112cqw;
+  margin: 0;
+  padding: 15.3cqw 12cqw 12.6cqw;
+  translate: -50% -50%;
+  transform: translateY(1cqw) scale(0.8);
+  transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1);
+  border-radius: 0.5cqw;
+  background: var(--grana), linear-gradient(160deg, #fffefb, var(--carta) 65%, #f7f3ea);
+  box-shadow: 0 2cqw 6cqw rgba(0, 0, 0, 0.35);
+  color: var(--rosso);
+  text-align: center;
+}
+
+/* :where tiene bassa la specificità, così i margini dei singoli elementi qui sotto valgono. */
+.cartoncino :where(p, h1) {
+  margin: 0;
+}
+
+.cartoncino__cornice {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cornice {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cornice__foglia {
+  fill: var(--carta);
+}
+
+.cornice__pieno {
+  fill: currentColor;
+  stroke: none;
+}
+
+.cartoncino__titolo {
+  font-family: "Pinyon Script", cursive;
+  font-size: 9.3cqw;
+  font-weight: 400;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.cartoncino__nome {
+  margin-top: 1.4cqw;
+  font-size: 2.9cqw;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+}
+
+.cartoncino__fregio {
+  width: 16cqw;
+  margin-top: 3cqw;
+}
+
+.cartoncino__fregio svg {
+  display: block;
+  width: 100%;
+}
+
+.cartoncino__testo {
+  margin-top: 3.2cqw;
+  font-size: 3.6cqw;
+  line-height: 1.55;
+  letter-spacing: 0.015em;
+  text-wrap: balance;
+}
+
+.cartoncino__testo p + p {
+  margin-top: 0.55em;
+}
+
+.cartoncino__firma {
+  margin-top: 4.6cqw;
+  font-family: "Pinyon Script", cursive;
+  font-size: 8.6cqw;
+  line-height: 1;
+}
+
+.cartoncino__ps {
+  margin-top: 2cqw;
+  font-size: 3cqw;
+  font-style: italic;
+}
+
+.cartoncino .cartoncino__data {
+  margin-top: auto;
+  font-size: 2.4cqw;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+}
+
+.cartoncino .rivela {
+  opacity: 0;
+  transform: translateY(1.5cqw);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition-delay: calc(var(--i) * 0.45s);
+}
+
+/* Angolo che si arriccia: invita al secondo tap e anticipa la pergamena. */
+.cartoncino__angolo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-top-left-radius: 0.6cqw;
+  background: linear-gradient(135deg, #f3eee3 0%, #d9d0bd 48%, var(--notte) 50%);
+}
+
+@keyframes angolo-arriccia {
+  0%,
+  100% {
+    width: 0;
+    height: 0;
+  }
+  50% {
+    width: 8cqw;
+    height: 8cqw;
+  }
+}
+
+/* Stati della sequenza, aggiunti uno dopo l'altro da 01-biglietto.js */
+
+.is-rotto .sigillo {
+  animation: none;
+}
+
+.is-rotto .sigillo::before,
+.is-rotto .sigillo::after {
+  opacity: 0;
+  animation: none;
+}
+
+.is-rotto .sigillo__meta--sx {
+  transform: translate(-3cqw, 2.5cqw) rotate(-18deg);
+  opacity: 0;
+}
+
+.is-rotto .sigillo__meta--dx {
+  transform: translate(3cqw, 2.5cqw) rotate(18deg);
+  opacity: 0;
+}
+
+.is-aperta .busta__lembo {
+  transform: rotateX(180deg);
+}
+
+.is-dietro .busta__lembo {
+  z-index: 1;
+}
+
+.is-fuori .cartoncino {
+  transform: translateY(-40cqw) scale(0.8);
+}
+
+.is-sola .busta__retro,
+.is-sola .busta__tasca,
+.is-sola .busta__lembo {
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.5, 0, 0.8, 0.4), opacity 0.45s ease 0.3s;
+}
+
+.is-sola .busta__retro,
+.is-sola .busta__tasca {
+  transform: translateY(120cqh) rotate(5deg);
+}
+
+.is-sola .busta__lembo {
+  transform: translateY(120cqh) rotateX(180deg);
+}
+
+.is-sola .cartoncino {
+  transform: translateY(-6cqw) scale(1);
+}
+
+.is-scritta .cartoncino .rivela {
+  opacity: 1;
+  transform: none;
+}
+
+.is-pronta .cartoncino__angolo {
+  animation: angolo-arriccia 2.6s ease-in-out 2.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .busta,
+  .festa__filo,
+  .festa__lampadina,
+  .festa__luce-lontana,
+  .sigillo,
+  .sigillo::after {
+    animation: none;
+  }
+
+  .is-pronta .cartoncino__angolo {
+    width: 5cqw;
+    height: 5cqw;
+    animation: none;
+  }
+}
+

@@ -3,7 +3,7 @@
 ## Obiettivo
 Pagina web interattiva di circa 2:30-3:00 per la laurea di Ginevra. Parte come un biglietto di congratulazioni e rivela a poco a poco il regalo: una cena omakase per due da Sonkei Omakase (Roncadelle, BS).
 
-Viene consegnata di persona e lei la apre da un QR sul telefono di Nicola (Android). Le scene sono descritte in `STORYBOARD.md`.
+Viene consegnata di persona alla festa di laurea del 20 novembre 2026: lei la apre da un QR sul telefono di Nicola (Android). Le scene sono descritte in `STORYBOARD.md`.
 
 ## Vincoli
 - HTML, CSS e JS statici, senza backend. Le librerie si usano solo se servono davvero: chiedi prima.
@@ -13,6 +13,7 @@ Viene consegnata di persona e lei la apre da un QR sul telefono di Nicola (Andro
 - Leggera (meno di 5 MB), con `noindex` e nessun tracciamento.
 - Il parametro `?scene=N` salta alla scena N durante i test.
 - Testi, foto e didascalie stanno in un unico file di contenuti (`content.js`), separato dal codice.
+- I font (Pinyon Script, Bodoni Moda) sono incorporati in `assets/fonts/`: nessuna richiesta a siti esterni.
 - La scena 5 ha 4 ricordi, più il maki finale.
 - Si pubblica su GitHub Pages. Titolo della pagina, nome del repo e URL devono essere neutri: niente "sushi" né "omakase".
 

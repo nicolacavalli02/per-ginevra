@@ -47,6 +47,10 @@ const SUONI = {
     nota(c, u, { freq: 1757, picco: 0.08, coda: 1.4 });
     nota(c, u, { freq: 2794, picco: 0.04, coda: 0.8 });
   },
+  sigillo: (c, u) => {
+    rumore(c, u, { freq: 1800, q: 2, picco: 0.28, coda: 0.07 });
+    nota(c, u, { freq: 95, picco: 0.22, coda: 0.1 });
+  },
   carta: (c, u) => rumore(c, u, { freq: 3500, q: 0.6, picco: 0.12, attacco: 0.05, coda: 0.35 }),
   coltello: (c, u) => {
     rumore(c, u, { filtro: 'highpass', freq: 2500, picco: 0.18, coda: 0.04 });

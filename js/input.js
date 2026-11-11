@@ -2,7 +2,7 @@
 
 // Rilasciare il mouse dopo un trascinamento genera anche un click:
 // lo ignoriamo se arriva subito dopo uno swipe.
-let ultimoSwipe = 0;
+let ultimoSwipe = -Infinity;
 const PAUSA_DOPO_SWIPE = 350;
 
 export function onTap(el, fn) {
