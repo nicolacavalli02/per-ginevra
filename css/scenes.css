@@ -1692,3 +1692,475 @@
     animation: none;
   }
 }
+
+/* ---------- Scena 5: il bancone ---------- */
+
+/* La sala è quella della scena 4, già nello stato finale. Dondolio e tremolio della
+   lanterna riprendono dal punto in cui li lascia la scena 4 (fine − accende = 3,15 s). */
+.bancone .kaizen__pendolo {
+  animation-delay: -3.15s;
+  transition: translate 1.5s cubic-bezier(0.4, 0, 0.2, 1), scale 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bancone .kaizen__luce {
+  animation-delay: -2.05s;
+}
+
+/* Lo sguardo scende sul bancone: la lanterna sale e rimpicciolisce, la scritta se ne va. */
+.is-servizio .kaizen__pendolo {
+  translate: 0 -14.5cqh;
+  scale: 0.55;
+}
+
+.is-servizio .kaizen__lettura {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Il bancone disegnato (finché non arriva la foto): il piano sale fino a metà schermo. */
+.bancone .kaizen__bancone {
+  transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.is-servizio .kaizen__bancone {
+  height: 50cqh;
+}
+
+/* Il banco ha le proporzioni della foto di fondo (9:16) e la copre come farebbe lei:
+   --u è un centesimo della sua larghezza, e tutto quello che sta sul piatto si misura così. */
+.banco {
+  --u: max(1cqw, 0.558cqh);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 100);
+  height: calc(var(--u) * 179.2);
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+/* La faccia frontale del bancone disegnato, in ombra, con lo spigolo che prende luce. */
+.banco::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 73%;
+  bottom: 0;
+  border-top: calc(var(--u) * 0.45) solid rgba(255, 206, 150, 0.4);
+  background: linear-gradient(180deg, rgba(6, 4, 2, 0.5), rgba(6, 4, 2, 0.85));
+  opacity: 0;
+  transition: opacity 1.4s ease 0.3s;
+}
+
+.is-servizio .banco::before {
+  opacity: 1;
+}
+
+.banco__foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.ha-fondo.is-servizio .banco__foto {
+  opacity: 1;
+}
+
+/* Con la foto, piatto e bancone sono già nella foto stessa. */
+.ha-fondo .piatto,
+.ha-fondo .banco::before {
+  display: none;
+}
+
+/* Il piatto disegnato: ceramica nera vista di scorcio. */
+.piatto {
+  position: absolute;
+  left: 50%;
+  top: 63%;
+  width: calc(var(--u) * 68);
+  height: calc(var(--u) * 13.5);
+  translate: -50% -50%;
+  opacity: 0;
+  transition: opacity 1s ease 0.6s;
+}
+
+.is-servizio .piatto {
+  opacity: 1;
+}
+
+.piatto::before {
+  content: "";
+  position: absolute;
+  left: -3%;
+  right: -3%;
+  top: 55%;
+  bottom: -28%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.65), transparent);
+}
+
+.piatto__piano {
+  position: absolute;
+  inset: 0 0 calc(var(--u) * 2);
+  background: radial-gradient(60% 110% at 50% 20%, #453c33 0%, #221e1a 55%, #100e0c 100%);
+  clip-path: polygon(6% 0, 94% 0, 100% 100%, 0 100%);
+}
+
+.piatto__bordo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 2.2);
+  border-radius: 0 0 calc(var(--u) * 1) calc(var(--u) * 1);
+  background: linear-gradient(180deg, #2e2721, #0b0a09);
+  box-shadow: inset 0 calc(var(--u) * 0.3) 0 rgba(255, 214, 160, 0.25);
+}
+
+/* Un alone che respira sul piatto: invita a toccare. */
+.banco__invito {
+  position: absolute;
+  left: 50%;
+  top: 61%;
+  width: calc(var(--u) * 46);
+  height: calc(var(--u) * 18);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 214, 150, 0.5), transparent);
+  opacity: 0;
+}
+
+.is-attesa .banco__invito {
+  animation: banco-invito 1.8s ease-in-out infinite;
+}
+
+@keyframes banco-invito {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* I pezzi disegnati (segnaposto finché non ci sono le immagini vere). */
+.pezzo {
+  position: absolute;
+  left: 50%;
+  top: calc(63.2% - var(--u) * 10);
+  width: calc(var(--u) * 19);
+  height: calc(var(--u) * 10.5);
+  translate: -50% 0;
+  opacity: 0;
+  transform: translateY(calc(var(--u) * -16)) scale(0.8);
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.12), opacity 0.3s ease;
+}
+
+.pezzo.is-servito {
+  opacity: 1;
+  transform: none;
+}
+
+.pezzo.is-mangiato {
+  opacity: 0;
+  transform: scale(0.55);
+  transition: transform 0.35s ease-in, opacity 0.3s ease;
+}
+
+.pezzo::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -8%;
+  z-index: -1;
+  height: 24%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.pezzo__riso {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  bottom: 0;
+  height: 60%;
+  border-radius: 42% 42% 30% 30% / 70% 70% 30% 30%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0 18%, transparent 19%) 0 0 / calc(var(--u) * 1.5) calc(var(--u) * 1.3),
+    linear-gradient(180deg, #fffdf6, #ddd4c2);
+  box-shadow: inset 0 calc(var(--u) * -0.8) calc(var(--u) * 1) rgba(120, 100, 70, 0.35);
+}
+
+.pezzo__sopra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2%;
+  height: 58%;
+  border-radius: 50% 50% 38% 38% / 75% 75% 35% 35%;
+  box-shadow:
+    inset 0 calc(var(--u) * 0.5) calc(var(--u) * 0.6) rgba(255, 255, 255, 0.35),
+    inset 0 calc(var(--u) * -0.8) calc(var(--u) * 1) rgba(0, 0, 0, 0.22);
+}
+
+.pezzo--salmone .pezzo__sopra {
+  background:
+    repeating-linear-gradient(112deg, transparent 0 calc(var(--u) * 1.9), rgba(255, 236, 218, 0.8) calc(var(--u) * 1.9) calc(var(--u) * 2.4)),
+    linear-gradient(180deg, #ffb07a, #ee7a38);
+}
+
+.pezzo--tonno .pezzo__sopra {
+  background:
+    repeating-linear-gradient(100deg, transparent 0 calc(var(--u) * 2.4), rgba(255, 170, 170, 0.25) calc(var(--u) * 2.4) calc(var(--u) * 2.7)),
+    linear-gradient(180deg, #d6434c, #8a1220);
+}
+
+.pezzo--gambero .pezzo__sopra {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(var(--u) * 2.2), rgba(232, 96, 52, 0.6) calc(var(--u) * 2.2) calc(var(--u) * 2.9)),
+    linear-gradient(180deg, #fff0e4, #f9b99a);
+}
+
+.pezzo--gambero .pezzo__sopra::after {
+  content: "";
+  position: absolute;
+  right: -9%;
+  top: 30%;
+  width: 16%;
+  height: 55%;
+  background: #ef6a3c;
+  clip-path: polygon(0 35%, 100% 0, 70% 50%, 100% 100%, 0 65%);
+}
+
+/* Il quarto pezzo ha una fascia di alga intorno e le uova sopra. */
+.pezzo--ikura .pezzo__riso {
+  left: 14%;
+  right: 14%;
+  height: 74%;
+  border-radius: 10% / 16%;
+  background: linear-gradient(90deg, #070b08, #1d2a20 35%, #0d130f 70%, #060907);
+  box-shadow: none;
+}
+
+.pezzo--ikura .pezzo__sopra {
+  left: 15%;
+  right: 15%;
+  top: 8%;
+  height: 34%;
+  border-radius: 45% 45% 12% 12% / 80% 80% 20% 20%;
+  background:
+    radial-gradient(circle at 35% 35%, #ffd08a 0 16%, #f47a1e 17% 62%, transparent 64%) 0 0 / calc(var(--u) * 2.3) calc(var(--u) * 2.3),
+    #c94e0e;
+}
+
+/* Ultimo pezzo: la pergamena, che diventa un rotolo di alga e poi sei fette. */
+.maki {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: calc(var(--u) * 40);
+  height: calc(var(--u) * 6.6);
+  translate: -50% -50%;
+  opacity: 0;
+  transform: translateY(calc(var(--u) * -16)) rotate(-6deg);
+  transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.3s ease;
+}
+
+.is-pergamena .maki {
+  opacity: 1;
+  transform: none;
+}
+
+.maki__rotolo {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--u) * 1.1) / 50%;
+  background:
+    var(--grana),
+    linear-gradient(180deg, #b3a78f 0%, #e7e0d0 17%, #fffdf8 42%, #f0e9da 68%, #a39780 100%);
+  box-shadow: 0 calc(var(--u) * 1.4) calc(var(--u) * 2) rgba(0, 0, 0, 0.5);
+}
+
+.maki__rotolo::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  aspect-ratio: 0.38;
+  translate: 50% 0;
+  border-radius: 50%;
+  background: repeating-radial-gradient(ellipse closest-side at 50% 50%, #c4b79c 0 9%, #f7f2e7 9% 27%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.1) #b1a58b;
+}
+
+/* Il fiocco è lo stesso disegno delle scene 2 e 3: il centro del rotolo sta nel punto (15, 12). */
+.maki__fiocco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 20.8);
+  height: calc(var(--u) * 23.6);
+  translate: -50% calc(-12 / 34 * 100%);
+  transition: opacity 0.4s ease;
+}
+
+.maki__fiocco svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.maki .nastro__fascia,
+.maki .nastro__anello,
+.maki .nastro__nodo,
+.maki .nastro__coda {
+  transform: none;
+  transition: none;
+}
+
+/* Parte larga quanto il nastro e si allarga fino a coprire tutto il rotolo. */
+.maki__alga {
+  position: absolute;
+  inset: -2% 0;
+  border-radius: calc(var(--u) * 1.1) / 50%;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 calc(var(--u) * 0.5), transparent calc(var(--u) * 0.5) calc(var(--u) * 1.3)),
+    linear-gradient(180deg, #070b08 0%, #1e2b21 38%, #111a14 62%, #050806 100%);
+  opacity: 0;
+  transform: scaleX(0.1);
+  transition: transform 1s cubic-bezier(0.5, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.is-alga .maki__alga {
+  opacity: 1;
+  transform: none;
+}
+
+.is-alga .maki__fiocco {
+  opacity: 0;
+}
+
+.maki__fette {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  gap: calc(var(--u) * 1.2);
+  translate: -50% -50%;
+  opacity: 0;
+}
+
+.maki__fetta {
+  width: calc(var(--u) * 7.4);
+  height: calc(var(--u) * 7.4);
+  border-radius: 50%;
+  background: radial-gradient(circle, #f08a52 0 24%, #fffdf6 25% 68%, #0e1611 69%);
+  box-shadow: 0 calc(var(--u) * 1.2) calc(var(--u) * 1.6) rgba(0, 0, 0, 0.55);
+  scale: 0.4;
+  transition: scale 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) calc(var(--i) * 70ms);
+}
+
+.is-tagliato .maki__fette {
+  opacity: 1;
+}
+
+.is-tagliato .maki__fetta {
+  scale: 1;
+}
+
+.is-tagliato .maki__rotolo,
+.is-tagliato .maki__alga {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Le polaroid dei ricordi: nascono dal piatto, si mostrano grandi nel buio sotto la
+   lanterna, poi si mettono via in fila davanti a lei. --w è la larghezza da grande. */
+.ricordo {
+  --w: min(56cqw, 27cqh);
+  position: absolute;
+  left: 50cqw;
+  top: 36cqh;
+  box-sizing: border-box;
+  width: var(--w);
+  margin: 0;
+  padding: calc(var(--w) * 0.055) calc(var(--w) * 0.055) 0;
+  translate: -50% -50%;
+  border-radius: calc(var(--w) * 0.012);
+  background: var(--grana), #f7f2e8;
+  box-shadow: 0 calc(var(--w) * 0.03) calc(var(--w) * 0.1) rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translateY(27cqh) scale(0.12) rotate(10deg);
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.ricordo.is-grande {
+  opacity: 1;
+  transform: rotate(var(--storta));
+}
+
+.ricordo.is-riposta {
+  opacity: 1;
+  transform: translate(var(--dx), 51cqh) rotate(var(--r)) scale(0.36);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ricordo__foto {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: #241d17;
+}
+
+.ricordo__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La foto "si sviluppa": parte scura e si schiarisce. */
+.ricordo__foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #1d1712;
+  transition: opacity 1.3s ease 0.35s;
+}
+
+.ricordo.is-grande .ricordo__foto::after,
+.ricordo.is-riposta .ricordo__foto::after {
+  opacity: 0;
+}
+
+.ricordo__vuota {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #9c8a72, #5a4c3f);
+  color: rgba(255, 255, 255, 0.55);
+  font: 600 calc(var(--w) * 0.34) "Bodoni Moda", serif;
+}
+
+.ricordo__didascalia {
+  display: grid;
+  place-items: center;
+  min-height: calc(var(--w) * 0.2);
+  padding: calc(var(--w) * 0.03) 0 calc(var(--w) * 0.045);
+  color: #3b2f26;
+  font: 400 calc(var(--w) * 0.092) / 1.1 "Pinyon Script", cursive;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-attesa .banco__invito {
+    animation: none;
+    opacity: 0.4;
+  }
+}

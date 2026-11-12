@@ -58,7 +58,13 @@ export default {
     lettura: 'kaizen',
   },
 
-  // Scena 5: un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.
+  // Scena 5: la foto del bancone vuoto che fa da fondo (verticale 9:16).
+  // Percorso in assets/img/, oppure null: in quel caso il bancone è disegnato.
+  bancone: {
+    fondo: null,
+  },
+
+  // Un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.
   ricordi: [
     { foto: null, didascalia: '[didascalia del ricordo 1]' },
     { foto: null, didascalia: '[didascalia del ricordo 2]' },
