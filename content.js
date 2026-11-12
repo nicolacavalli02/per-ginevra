@@ -52,6 +52,12 @@ export default {
     fine: 'Continuous Improvement',
   },
 
+  // Scena 4: i due caratteri li scrive il pennello; qui c'è come si leggono.
+  kaizen: {
+    kanji: '改善',
+    lettura: 'kaizen',
+  },
+
   // Scena 5: un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.
   ricordi: [
     { foto: null, didascalia: '[didascalia del ricordo 1]' },

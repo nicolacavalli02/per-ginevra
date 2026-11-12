@@ -1,8 +1,9 @@
 // Gestore delle scene: ne monta una alla volta e ripulisce quella precedente.
 //
-// Una scena è un oggetto { mount(el, ctx), taglio? }. mount può restituire una funzione di pulizia.
+// Una scena è un oggetto { mount(el, ctx), taglio?, sopra? }. mount può restituire una funzione di pulizia.
 // ctx offre:
 //   next()               passa alla scena successiva (vale una volta sola)
+//   sotto, togliSotto()  le scene rimaste sotto una scena "sopra", e come toglierle
 //   after(ms, fn)        timer annullato da solo al cambio scena
 //   onTap(el, fn)        tap/click; restituisce la funzione per rimuoverlo
 //   onSwipe(el, opzioni) swipe/trascinamento; idem
@@ -28,7 +29,18 @@ export function createEngine({ stage, scenes, audio, content }) {
     // entra con uno stacco netto invece della dissolvenza, così il cambio non si vede.
     const taglio = scenes[i].taglio === true;
 
+    // Una scena con "sopra: true" entra anch'essa con uno stacco, ma appoggiata sopra
+    // la precedente, che resta ferma lì sotto finché la nuova non chiama ctx.togliSotto():
+    // così può coprirla a poco a poco invece di sostituirla di colpo.
+    const sopra = scenes[i].sopra === true;
+    const sotto = [];
+
     for (const vecchia of stage.querySelectorAll('.scene')) {
+      if (sopra) {
+        vecchia.classList.add('is-sotto');
+        sotto.push(vecchia);
+        continue;
+      }
       if (taglio) {
         vecchia.remove();
         continue;
@@ -55,6 +67,10 @@ export function createEngine({ stage, scenes, audio, content }) {
       content,
       numero: i + 1,
       totale: scenes.length,
+      sotto,
+      togliSotto() {
+        for (const vecchia of sotto.splice(0)) vecchia.remove();
+      },
       next() {
         if (indice === i && i < scenes.length - 1) go(i + 1);
       },
@@ -69,7 +85,7 @@ export function createEngine({ stage, scenes, audio, content }) {
     const fine = scenes[i].mount(el, ctx);
     if (typeof fine === 'function') pulizie.push(fine);
 
-    if (taglio) {
+    if (taglio || sopra) {
       el.style.transition = 'none';
       el.classList.add('is-active');
       void el.offsetWidth;

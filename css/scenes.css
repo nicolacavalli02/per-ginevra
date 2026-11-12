@@ -1384,3 +1384,311 @@
   }
 }
 
+
+/* ---------- Scena 4: la lanterna e il pennello ---------- */
+
+/* Una scena rimasta sotto a quella nuova: ferma, e senza i pezzi che la nuova ridisegna. */
+.scene.is-sotto {
+  pointer-events: none;
+}
+
+.is-sotto .processo__mondo--gettone,
+.is-sotto .bpmn-attivita--fine {
+  display: none;
+}
+
+/* Trasparente: all'inizio sotto si vede ancora il diagramma della scena 3. */
+.kaizen {
+  background: none;
+  cursor: default;
+}
+
+.kaizen.is-sola {
+  background: #fbfbfc;
+}
+
+/* La sera scende sul diagramma e lo copre; poi, quando la lanterna si accende, è notte. */
+.kaizen__sera,
+.kaizen__notte {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.kaizen__sera {
+  background: linear-gradient(180deg, #23223a 0%, #3b3550 42%, #6b4f55 78%, #8a6253 100%);
+  transition: opacity 1.4s ease;
+}
+
+.kaizen__notte {
+  background: radial-gradient(120% 80% at 50% 45%, #1a130e 0%, #0d0a08 60%, #070505 100%);
+  transition: opacity 1.3s ease;
+}
+
+.is-sera .kaizen__sera,
+.is-accesa .kaizen__notte {
+  opacity: 1;
+}
+
+/* La pergamena parte dov'era nel diagramma, poi cade fuori scena passando dietro la lanterna. */
+.kaizen .gettone {
+  transform: translate(50cqw, calc(50cqh - 13cqw)) scale(0.22);
+  transition: transform 1s cubic-bezier(0.55, 0, 0.85, 0.45);
+}
+
+.kaizen.is-sera .gettone {
+  transform: translate(50cqw, 112cqh) scale(0.22) rotate(24deg);
+}
+
+/* Tutto quello che pende dall'alto: filo, alone e lanterna dondolano e salgono insieme. */
+.kaizen__pendolo {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 0;
+  transition: translate 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.is-accesa .kaizen__pendolo {
+  animation: kaizen-dondolo 4.4s ease-in-out infinite;
+}
+
+.is-bancone .kaizen__pendolo {
+  translate: 0 -19cqh;
+}
+
+@keyframes kaizen-dondolo {
+  25% {
+    rotate: 0.7deg;
+  }
+
+  75% {
+    rotate: -0.7deg;
+  }
+}
+
+.kaizen__filo {
+  position: absolute;
+  left: 50cqw;
+  top: -25cqh;
+  width: 0.4cqw;
+  height: calc(75cqh - 31.5cqw);
+  margin-left: -0.2cqw;
+  background: #17120f;
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
+}
+
+.is-sera .kaizen__filo {
+  transform: none;
+}
+
+/* Parte identica al riquadro "Continuous Improvement" del diagramma, poi diventa una lanterna di carta. */
+.kaizen__lanterna {
+  position: absolute;
+  left: 50cqw;
+  top: 50cqh;
+  box-sizing: border-box;
+  width: 56cqw;
+  height: 17cqw;
+  translate: -50% -50%;
+  border: 0.45cqw solid var(--accento);
+  border-radius: 1.8cqw;
+  background: #fff;
+  box-shadow: 0 0 0 1.2cqw rgba(179, 38, 42, 0.12);
+  transition:
+    width 1.3s cubic-bezier(0.5, 0, 0.2, 1),
+    height 1.3s cubic-bezier(0.5, 0, 0.2, 1),
+    border-radius 1.3s cubic-bezier(0.5, 0, 0.2, 1),
+    background-color 1.3s ease,
+    border-color 1.3s ease,
+    box-shadow 0.6s ease;
+}
+
+.is-sera .kaizen__lanterna {
+  width: 40cqw;
+  height: 60cqw;
+  border-color: rgba(58, 40, 24, 0.55);
+  border-radius: 18cqw / 15cqw;
+  background: #e7ddc7;
+  box-shadow: 0 0 0 0 rgba(179, 38, 42, 0);
+}
+
+.kaizen__titolo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  color: var(--tratto);
+  font: 500 4cqw / 1.25 var(--sans);
+  white-space: nowrap;
+  transition: opacity 0.35s ease;
+}
+
+.is-accesa .kaizen__lanterna {
+  border-color: rgba(120, 66, 20, 0.7);
+}
+
+.is-sera .kaizen__titolo {
+  opacity: 0;
+}
+
+/* La luce dentro la lanterna e le coste della carta: due strati che seguono la sua forma. */
+.kaizen__luce,
+.kaizen__coste {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+}
+
+.kaizen__luce {
+  background: radial-gradient(70% 60% at 50% 52%, #fff7dc 0%, #fbe0a0 38%, #f0b560 72%, #d98a3a 100%);
+  transition: opacity 1.1s ease;
+}
+
+.is-accesa .kaizen__luce {
+  opacity: 1;
+  animation: kaizen-fiamma 2.7s ease-in-out 1.1s infinite;
+}
+
+.kaizen__coste {
+  background:
+    linear-gradient(90deg, rgba(40, 25, 10, 0.3), transparent 28%, transparent 72%, rgba(40, 25, 10, 0.3)),
+    linear-gradient(180deg, transparent 55%, rgba(40, 25, 10, 0.22)),
+    repeating-linear-gradient(180deg, transparent 0 2.7cqw, rgba(70, 45, 20, 0.17) 2.7cqw 3cqw);
+  transition: opacity 0.8s ease 0.6s;
+}
+
+.is-sera .kaizen__coste {
+  opacity: 1;
+}
+
+.kaizen__inchiostro {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 25cqw;
+  height: 50cqw;
+  translate: -50% -50%;
+}
+
+/* I due anelli scuri che chiudono la lanterna sopra e sotto. */
+.kaizen__tappo {
+  position: absolute;
+  left: 50%;
+  width: 17cqw;
+  height: 2.8cqw;
+  translate: -50% 0;
+  border-radius: 0.7cqw;
+  background: linear-gradient(180deg, #2f251d, #120e0b);
+  opacity: 0;
+  scale: 0.4 1;
+  transition: opacity 0.5s ease 0.75s, scale 0.6s cubic-bezier(0.3, 1.3, 0.5, 1) 0.75s;
+}
+
+.kaizen__tappo--su {
+  top: -1.9cqw;
+}
+
+.kaizen__tappo--giu {
+  bottom: -1.9cqw;
+}
+
+.is-sera .kaizen__tappo {
+  opacity: 1;
+  scale: 1;
+}
+
+/* L'alone caldo intorno alla lanterna accesa. */
+.kaizen__alone {
+  position: absolute;
+  left: 50cqw;
+  top: 50cqh;
+  width: 160cqw;
+  height: 160cqw;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 186, 96, 0.42) 0%, rgba(255, 172, 82, 0.2) 28%, rgba(255, 162, 72, 0.07) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.is-accesa .kaizen__alone {
+  opacity: 1;
+}
+
+@keyframes kaizen-fiamma {
+  30% {
+    filter: brightness(0.95);
+  }
+
+  55% {
+    filter: brightness(1.02);
+  }
+
+  75% {
+    filter: brightness(0.93);
+  }
+}
+
+/* Il bancone: esce dal buio quando la luce della lanterna gli cade sopra. */
+.kaizen__bancone {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 27cqh;
+  background:
+    radial-gradient(70% 120% at 50% 0%, rgba(255, 186, 104, 0.42) 0%, rgba(255, 170, 90, 0.16) 45%, transparent 75%),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.14) 0 0.25cqw, transparent 0.25cqw 2.2cqw),
+    linear-gradient(180deg, #4a3423 0%, #2c1e14 35%, #150e09 100%);
+  opacity: 0;
+  translate: 0 3cqh;
+  transition: opacity 1.4s ease, translate 1.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Il bordo del bancone, che prende luce al centro. */
+.kaizen__bancone::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0.6cqw;
+  background: linear-gradient(90deg, #2a1c12, #e6b678 50%, #2a1c12);
+}
+
+.is-bancone .kaizen__bancone {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.kaizen__lettura {
+  position: absolute;
+  left: 0;
+  top: calc(31cqh + 38cqw);
+  width: 100%;
+  margin: 0;
+  color: #f3e2bd;
+  font: italic 400 9cqw / 1.2 "Bodoni Moda", "Noto Serif", Georgia, serif;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-indent: 0.14em;
+  text-shadow: 0 0 4cqw rgba(255, 180, 90, 0.35);
+  opacity: 0;
+  translate: 0 1.5cqw;
+  transition: opacity 1s ease 0.7s, translate 1s ease 0.7s;
+}
+
+.is-bancone .kaizen__lettura {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-accesa .kaizen__pendolo,
+  .is-accesa .kaizen__luce {
+    animation: none;
+  }
+}

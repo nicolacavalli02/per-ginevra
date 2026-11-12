@@ -77,6 +77,7 @@ body {
   opacity: 0;
   transition: opacity 0.4s ease;
   font-size: 4.4cqw;
+  isolation: isolate; /* ogni scena è un piano a sé: i suoi livelli non scavalcano la scena sopra */
 }
 
 .scene.is-active {
