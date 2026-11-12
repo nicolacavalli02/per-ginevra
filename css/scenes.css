@@ -911,3 +911,476 @@
   transform: none;
 }
 
+/* ---------- Scena 3: il diagramma BPMN ---------- */
+
+.processo {
+  --tratto: #22242a;
+  --accento: #b3262a;
+  --tenue: #8a8f99;
+  --sans: Roboto, "Segoe UI", system-ui, sans-serif;
+}
+
+/* La tela bianca del programma di modellazione: copre la festa in dissolvenza. */
+.processo__tela {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  background: #fbfbfc;
+  color: var(--tratto);
+  font-family: var(--sans);
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.is-tela .processo__tela {
+  opacity: 1;
+}
+
+/* Il "mondo" è il foglio del diagramma, più alto dello schermo: la telecamera lo fa scorrere. */
+.processo__mondo {
+  position: absolute;
+  left: 0;
+  top: 15cqw;
+  width: 100cqw;
+  height: 400cqw;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.processo__tela .processo__mondo {
+  background-image: radial-gradient(circle, #c3c8d0 0.24cqw, transparent 0.3cqw);
+  background-position: 2cqw 2cqw;
+  background-size: 4cqw 4cqw;
+}
+
+/* I bordi laterali della vasca, per tutta l'altezza. */
+.processo__tela .processo__mondo::before {
+  content: "";
+  position: absolute;
+  left: 2cqw;
+  right: 2cqw;
+  top: 14cqw;
+  bottom: 0;
+  border: solid var(--tratto);
+  border-width: 0 0.35cqw;
+}
+
+.processo__mondo--gettone {
+  z-index: 12;
+  pointer-events: none;
+}
+
+.processo__barra {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 13;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 15cqw;
+  padding-left: 3cqw;
+  background: #2e3138;
+  font-family: var(--sans);
+  transform: translateY(-100%);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) 0.3s;
+}
+
+.is-tela .processo__barra {
+  transform: none;
+}
+
+.processo__scheda {
+  padding: 1.6cqw 3.2cqw 1.4cqw;
+  border-radius: 1.4cqw 1.4cqw 0 0;
+  background: #fbfbfc;
+  color: #2e3138;
+  font-size: 2.9cqw;
+}
+
+.processo__scheda::before {
+  content: "";
+  display: inline-block;
+  width: 1.6cqw;
+  height: 1.6cqw;
+  margin-right: 1.6cqw;
+  border-radius: 50%;
+  background: var(--accento);
+}
+
+/* Vasca e corsie */
+.bpmn-vasca,
+.bpmn-corsia {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border: 0.35cqw solid var(--tratto);
+}
+
+.bpmn-vasca {
+  left: 2cqw;
+  top: 0;
+  width: 96cqw;
+  height: 8cqw;
+  background: #eef0f3;
+  font-size: 2.9cqw;
+  font-weight: 500;
+}
+
+.bpmn-corsia {
+  top: 8cqw;
+  width: 48cqw;
+  height: 6cqw;
+  border-top: 0;
+  background: #f5f6f8;
+  color: #555a64;
+  font-size: 2.5cqw;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+}
+
+.bpmn-corsia--sx {
+  left: 2cqw;
+}
+
+.bpmn-corsia--dx {
+  left: 50cqw;
+  border-left: 0;
+}
+
+.bpmn-divisore {
+  position: absolute;
+  left: 50cqw;
+  top: 14cqw;
+  bottom: 0;
+  margin-left: -0.175cqw;
+  border-left: 0.35cqw solid var(--tratto);
+}
+
+/* Frecce */
+.processo__flussi {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100cqw;
+  height: 320cqw;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Quello che nel processo viene dopo: invisibile finché non ci si arriva. */
+.is-nascosto {
+  opacity: 0 !important;
+}
+
+.bpmn-nodo.is-nascosto {
+  scale: 0.85;
+}
+
+.bpmn-flusso,
+.bpmn-etichetta {
+  transition: opacity 0.45s ease;
+}
+
+.bpmn-flusso__linea {
+  fill: none;
+  stroke: var(--tratto);
+  stroke-width: 0.45;
+  stroke-linejoin: round;
+}
+
+.bpmn-flusso__punta {
+  fill: var(--tratto);
+}
+
+/* La prossima freccia da percorrere "cammina": è l'invito a toccare. */
+.bpmn-flusso.is-prossimo .bpmn-flusso__linea {
+  stroke: var(--accento);
+  stroke-dasharray: 1.6 1.2;
+  animation: flusso-marcia 0.7s linear infinite;
+}
+
+.bpmn-flusso.is-fatto .bpmn-flusso__linea {
+  stroke: var(--accento);
+}
+
+.bpmn-flusso.is-prossimo .bpmn-flusso__punta,
+.bpmn-flusso.is-fatto .bpmn-flusso__punta {
+  fill: var(--accento);
+}
+
+@keyframes flusso-marcia {
+  to {
+    stroke-dashoffset: -2.8;
+  }
+}
+
+.bpmn-associazione {
+  fill: none;
+  stroke: var(--tenue);
+  stroke-width: 0.45;
+  stroke-dasharray: 0.1 1.3;
+  stroke-linecap: round;
+}
+
+/* Nodi: evento, attività, bivio. Luce dall'alto: una sottile ombra sotto. */
+.bpmn-nodo {
+  position: absolute;
+  box-sizing: border-box;
+  translate: -50% -50%;
+  border: 0.45cqw solid var(--tratto);
+  background: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.45s ease, scale 0.45s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.bpmn-evento {
+  width: 8.4cqw;
+  height: 8.4cqw;
+  border-width: 0.35cqw;
+  border-radius: 50%;
+}
+
+.bpmn-attivita {
+  display: grid;
+  place-items: center;
+  width: 38cqw;
+  height: 15cqw;
+  padding: 0 2.4cqw;
+  border-radius: 1.8cqw;
+  box-shadow: 0 0.5cqw 0 rgba(34, 36, 42, 0.08);
+  font-size: 3.2cqw;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.bpmn-attivita--fine {
+  width: 56cqw;
+  height: 17cqw;
+  font-size: 4cqw;
+}
+
+.bpmn-bivio {
+  width: 7.8cqw;
+  height: 7.8cqw;
+  rotate: 45deg;
+}
+
+.bpmn-bivio::before,
+.bpmn-bivio::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4.2cqw;
+  height: 0.5cqw;
+  translate: -50% -50%;
+  background: var(--tratto);
+}
+
+.bpmn-bivio::after {
+  rotate: 90deg;
+}
+
+.bpmn-nodo.is-qui {
+  border-color: var(--accento);
+  box-shadow: 0 0 0 1.2cqw rgba(179, 38, 42, 0.12);
+}
+
+.bpmn-etichetta {
+  position: absolute;
+  margin: 0;
+  padding: 0.3cqw 1cqw;
+  background: #fbfbfc;
+  color: #3a3d45;
+  font-size: 2.9cqw;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Insight: un "documento" vuoto e tratteggiato finché non viene rivelato. */
+.bpmn-insight {
+  position: absolute;
+  left: 4cqw;
+  box-sizing: border-box;
+  width: 44cqw;
+  height: 20cqw;
+  padding: 1.6cqw 2.4cqw;
+  border: 0.35cqw dashed #b4b9c2;
+  border-radius: 0.8cqw;
+  background: #fbfbfc;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.bpmn-insight b {
+  display: block;
+  color: var(--tenue);
+  font-size: 2.3cqw;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bpmn-insight span {
+  display: block;
+  margin-top: 0.6cqw;
+  font-size: 2.8cqw;
+  line-height: 1.25;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.1s;
+}
+
+.bpmn-insight.is-prossimo {
+  border-color: var(--accento);
+  animation: invito 1.5s ease-in-out infinite;
+}
+
+.bpmn-insight.is-rivelato {
+  border-style: solid;
+  border-color: var(--tratto);
+  background: #fff;
+  box-shadow: 0 0.5cqw 0 rgba(34, 36, 42, 0.08);
+  animation: insight-compare 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.bpmn-insight.is-rivelato b {
+  color: var(--accento);
+}
+
+.bpmn-insight.is-rivelato span {
+  opacity: 1;
+}
+
+/* L'angolo piegato del documento. */
+.bpmn-insight.is-rivelato::after {
+  content: "";
+  position: absolute;
+  right: -0.35cqw;
+  top: -0.35cqw;
+  width: 3.6cqw;
+  height: 3.6cqw;
+  background: linear-gradient(225deg, #fbfbfc 0 50%, var(--tratto) 50% calc(50% + 0.35cqw), #e9ebee calc(50% + 0.35cqw));
+}
+
+@keyframes invito {
+  50% {
+    box-shadow: 0 0 0 1.4cqw rgba(179, 38, 42, 0.14);
+  }
+}
+
+@keyframes insight-compare {
+  from {
+    transform: scale(0.94);
+  }
+}
+
+.bpmn-nota {
+  position: absolute;
+  left: 6cqw;
+  top: 170cqw;
+  width: 40cqw;
+  margin: 0;
+  padding-left: 2cqw;
+  border-left: 0.35cqw solid var(--tenue);
+  color: #555a64;
+  font-size: 2.7cqw;
+  font-style: italic;
+  opacity: 0;
+  transform: translateY(1cqw);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.bpmn-nota.is-visibile {
+  opacity: 1;
+  transform: none;
+}
+
+/* Le scelte ai bivi: etichette sulle frecce, che sono pulsanti. */
+.bpmn-scelta {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 1.3cqw 3cqw;
+  border: 0.4cqw solid var(--accento);
+  border-radius: 5cqw;
+  background: #fff;
+  color: var(--accento);
+  font: 500 3.1cqw var(--sans);
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1), background 0.2s ease, color 0.2s ease;
+}
+
+.bpmn-scelta.is-visibile {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  animation: invito 1.5s ease-in-out 0.4s infinite;
+}
+
+.bpmn-scelta.is-scelta {
+  background: var(--accento);
+  color: #fff;
+  animation: none;
+}
+
+.bpmn-scelta.is-scartata {
+  border-color: #b4b9c2;
+  color: var(--tenue);
+  opacity: 0.55;
+  animation: none;
+}
+
+/* Il gettone: la pergamena con il fiocco, rimpicciolita. */
+.gettone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.is-pronta .gettone {
+  transition: none;
+}
+
+.gettone .rotolo {
+  left: -30cqw;
+  top: -4.75cqw;
+  width: 60cqw;
+  height: 9.5cqw;
+  visibility: visible;
+}
+
+.gettone .nastro__fascia,
+.gettone .nastro__anello,
+.gettone .nastro__nodo,
+.gettone .nastro__coda {
+  transform: none;
+  transition: none;
+}
+
+/* Piccolo saltello mentre aspetta il tap (le misure sono prima della riduzione). */
+.is-pronta .gettone__corpo {
+  animation: gettone-attesa 1.6s ease-in-out infinite;
+}
+
+@keyframes gettone-attesa {
+  50% {
+    transform: translateY(-4cqw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bpmn-flusso.is-prossimo .bpmn-flusso__linea,
+  .bpmn-insight.is-prossimo,
+  .bpmn-scelta.is-visibile,
+  .is-pronta .gettone__corpo {
+    animation: none;
+  }
+}
+

@@ -338,5 +338,10 @@ export function creaFesta(el) {
       raf = 0;
       osservatore.disconnect();
     },
+    // Toglie la festa dalla scena (quando lo sfondo cambia del tutto).
+    rimuovi() {
+      this.distruggi();
+      for (const pezzo of [sfondo, ...candele, canvas, riverbero, alone]) pezzo.remove();
+    },
   };
 }

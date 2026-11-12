@@ -25,6 +25,33 @@ export default {
     titolo: 'From Customer Insights to Continuous Improvement',
   },
 
+  // Scena 3: il diagramma di processo.
+  processo: {
+    file: 'regalo-di-laurea.bpmn',
+    corsie: ['Ginevra', 'Nicola'],
+    inizio: 'Laurea conseguita',
+    raccolta: 'Raccogliere Customer Insights',
+    // Gli indizi: graduali, senza dire di cosa si tratta.
+    insight: [
+      'Anni di esami, appunti e scadenze. Ha deciso, organizzato e chiuso tutto lei.',
+      'Ha due grandi passioni. Nicola le conosce bene tutte e due.',
+      'Non si indossa, non si legge, non si appende.',
+    ],
+    // Ai bivi qualunque scelta porta allo stesso esito.
+    bivio1: {
+      domanda: 'Ha già capito cos’è?',
+      scelte: ['Sì', 'Certo'],
+      esito: 'No, non ha capito',
+      nota: 'Tutte le strade portano qui.',
+    },
+    bivio2: {
+      domanda: 'Vuole un altro indizio?',
+      scelte: ['Sì', 'Anche due'],
+      esito: 'Indizi esauriti',
+    },
+    fine: 'Continuous Improvement',
+  },
+
   // Scena 5: un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.
   ricordi: [
     { foto: null, didascalia: '[didascalia del ricordo 1]' },
