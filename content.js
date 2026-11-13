@@ -21,6 +21,12 @@ export default {
     data: '20 novembre 2026',
   },
 
+  // La pergamena arrotolata delle scene 2, 3 e 4: la stessa che torna sul piatto.
+  // foto: null per usare quella disegnata.
+  pergamena: {
+    foto: 'assets/img/pergamena.webp',
+  },
+
   tesi: {
     titolo: 'From Customer Insights to Continuous Improvement',
   },
@@ -56,6 +62,7 @@ export default {
   kaizen: {
     kanji: '改善',
     lettura: 'kaizen',
+    lanterna: 'assets/img/lanterna.webp', // la lanterna accesa; null per quella disegnata
   },
 
   // Scena 5: la foto del bancone vuoto che fa da fondo (verticale 9:16).
@@ -92,6 +99,7 @@ export default {
   // Scena 6: dietro la tendina, quattro bigliettini uno dopo l'altro.
   reveal: {
     fondo: 'assets/img/tavola.webp', // il bancone apparecchiato per due
+    tessuto: 'assets/img/tessuto.webp', // la stoffa della tendina; null per quella disegnata
 
     // Primo bigliettino: il regalo.
     annuncio: 'Il tuo regalo',

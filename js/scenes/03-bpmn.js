@@ -7,7 +7,7 @@
 // per questo entra con uno stacco netto; poi la tela bianca copre la festa.
 
 import { creaFesta } from './_festa.js';
-import { NASTRO } from './_nastro.js';
+import { creaGettone } from './_pergamena.js';
 
 // Tutte le misure sono in cqw, nel sistema di coordinate del diagramma ("mondo").
 const BARRA = 15; // altezza della barra in alto: il mondo comincia lì sotto
@@ -159,12 +159,7 @@ export default {
 
     // --- Il gettone: la pergamena con il fiocco, in un mondo suo che segue la telecamera ---
     const mondoGettone = crea('div', 'processo__mondo processo__mondo--gettone');
-    const gettone = crea('div', 'gettone');
-    const corpo = crea('div', 'gettone__corpo');
-    const nastro = crea('div', 'nastro');
-    nastro.innerHTML = NASTRO;
-    corpo.append(crea('div', 'rotolo'), nastro);
-    gettone.append(corpo);
+    const gettone = creaGettone(ctx.content);
     mondoGettone.append(gettone);
 
     el.append(tela, barra, mondoGettone);

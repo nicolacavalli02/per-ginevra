@@ -8,6 +8,7 @@
 import { creaCartoncino } from './_cartoncino.js';
 import { creaFesta } from './_festa.js';
 import { NASTRO } from './_nastro.js';
+import { creaRotoloFoto } from './_pergamena.js';
 
 // Misure in cqw: il cartoncino e il rotolo finito.
 const W = 80;
@@ -21,6 +22,7 @@ const TEMPI = {
   durata: 2600, // quanto dura l'arrotolamento
   nastro: 3700, // il nastro si srotola dall'alto fino al rotolo
   fiocco: 4600, // si avvolge e si annoda
+  foto: 5350, // il rotolo disegnato sfuma in quello fotografico (se c'è)
   fine: 6400, // si passa alla scena 3
 };
 
@@ -43,6 +45,8 @@ export default {
     nastro.className = 'nastro';
     nastro.innerHTML = NASTRO;
     foglio.append(cartoncino, rotolo, nastro);
+    const foto = creaRotoloFoto(ctx.content);
+    if (foto) foglio.append(foto);
 
     // La striscia di nastro che scende dall'alto del palco fino al rotolo.
     const striscia = document.createElement('i');
@@ -121,6 +125,7 @@ export default {
     ctx.after(TEMPI.arrotola + 1400, () => ctx.audio.play('carta'));
     ctx.after(TEMPI.nastro, stato('is-nastro'));
     ctx.after(TEMPI.fiocco, stato('is-fiocco'));
+    if (foto) ctx.after(TEMPI.foto, stato('is-foto'));
     ctx.after(TEMPI.fine, () => ctx.next());
 
     return () => {

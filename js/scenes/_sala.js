@@ -18,9 +18,18 @@ export function creaSala(el, content) {
   const inchiostro = crea('canvas', 'kaizen__inchiostro');
   inchiostro.setAttribute('role', 'img');
   inchiostro.setAttribute('aria-label', `${content.kaizen.kanji} (${content.kaizen.lettura})`);
+  // Da accesa la lanterna è una foto (se c'è): la carta disegnata serve fino a lì.
+  let foto = null;
+  if (content.kaizen.lanterna) {
+    el.classList.add('ha-lanterna');
+    foto = crea('img', 'kaizen__foto');
+    foto.alt = '';
+    foto.src = content.kaizen.lanterna;
+  }
   lanterna.append(
     crea('div', 'kaizen__luce'),
     crea('div', 'kaizen__coste'),
+    ...(foto ? [foto] : []),
     crea('span', 'kaizen__titolo', content.processo.fine),
     inchiostro,
     crea('div', 'kaizen__tappo kaizen__tappo--su'),

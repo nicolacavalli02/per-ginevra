@@ -5,8 +5,8 @@
 // carta, un pennello ci scrive i due caratteri, la lanterna si accende e la sua luce
 // cade su un bancone scuro: da lì parte la scena 5.
 
-import { NASTRO } from './_nastro.js';
-import { crea, creaSala } from './_sala.js';
+import { creaGettone } from './_pergamena.js';
+import { creaSala } from './_sala.js';
 
 // Quando succede ogni cosa, in millisecondi dall'ingresso.
 // La scena 5 riprende il dondolio della lanterna da dove lo lascia questa:
@@ -31,12 +31,7 @@ export default {
     const sala = creaSala(el, ctx.content);
 
     // La pergamena, dov'era alla fine del diagramma: cadrà dietro la lanterna.
-    const gettone = crea('div', 'gettone');
-    const corpo = crea('div', 'gettone__corpo');
-    const nastro = crea('div', 'nastro');
-    nastro.innerHTML = NASTRO;
-    corpo.append(crea('div', 'rotolo'), nastro);
-    gettone.append(corpo);
+    const gettone = creaGettone(ctx.content);
     sala.pendolo.before(gettone);
 
     const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;

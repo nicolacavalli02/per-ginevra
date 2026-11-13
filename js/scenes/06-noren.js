@@ -92,6 +92,11 @@ export default {
       const telo = crea('div', `noren__telo noren__telo--${lato}`);
       const tela = crea('canvas', 'noren__kanji');
       telo.append(tela);
+      if (c.tessuto) {
+        // La foto del tessuto, con i due bordi del telo un po' in ombra.
+        telo.classList.add('noren__telo--foto');
+        telo.style.backgroundImage = `linear-gradient(90deg, rgba(0, 0, 0, 0.3), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.3)), url("${c.tessuto}")`;
+      }
       return { telo, pennello: creaPennello(tela, [SONKEI[i]], { lato: LATO, colore: '#f4e7cc' }) };
     });
     noren.setAttribute('role', 'img');
