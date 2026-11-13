@@ -2206,3 +2206,308 @@
     opacity: 0.4;
   }
 }
+
+/* ---------- Scena 6: la tendina e la rivelazione ---------- */
+
+/* Trasparente finché la tendina non ha coperto tutto: sotto c'è ancora la scena 5. */
+.rivelazione {
+  background: none;
+  cursor: default;
+}
+
+.rivelazione.is-chiusa {
+  background: #050403;
+}
+
+/* La tendina: due teli rossi appesi a un'asta, che calano insieme dall'alto. */
+.noren {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  transform: translateY(-104%);
+  transition: transform 0.95s cubic-bezier(0.3, 1.2, 0.5, 1);
+}
+
+.is-calata .noren {
+  transform: none;
+}
+
+.is-aperta .noren {
+  pointer-events: none;
+}
+
+.noren__asta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3.4cqw;
+  background: linear-gradient(180deg, #5b4230 0%, #2f2118 70%, #140d09 100%);
+  box-shadow: 0 1cqw 2cqw rgba(0, 0, 0, 0.45);
+  transition: opacity 0.6s ease 0.5s;
+}
+
+.is-aperta .noren__asta {
+  opacity: 0;
+}
+
+/* Ogni telo è appeso per l'angolo esterno: aprendosi ruota e si raccoglie verso il suo lato.
+   --apri (da 0 a 1) segue il dito mentre lei scosta la tendina. */
+.noren__telo {
+  position: absolute;
+  top: 1.4cqw;
+  bottom: -3cqh;
+  width: 49.7cqw;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0%, transparent 9%, rgba(255, 255, 255, 0.06) 28%, transparent 46%, rgba(0, 0, 0, 0.13) 70%, transparent 88%, rgba(0, 0, 0, 0.24) 100%),
+    var(--grana),
+    linear-gradient(180deg, #7d1517 0%, #a8201f 6%, #9b1c1f 70%, #7f1618 100%);
+  box-shadow: 0 0 3cqw rgba(0, 0, 0, 0.5);
+  transition: transform 0.5s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.noren__telo--sx {
+  left: 0;
+  transform-origin: 0 0;
+  transform: rotate(calc(var(--apri, 0) * 16deg)) scaleX(calc(1 - var(--apri, 0) * 0.35));
+}
+
+.noren__telo--dx {
+  right: 0;
+  transform-origin: 100% 0;
+  transform: rotate(calc(var(--apri, 0) * -16deg)) scaleX(calc(1 - var(--apri, 0) * 0.35));
+}
+
+.is-trascina .noren__telo {
+  transition: none;
+}
+
+/* In attesa i teli si socchiudono appena e tornano: è l'invito a scostarli. */
+.is-pronta:not(.is-trascina) .noren__telo--sx {
+  animation: noren-respiro-sx 2.6s ease-in-out infinite;
+}
+
+.is-pronta:not(.is-trascina) .noren__telo--dx {
+  animation: noren-respiro-dx 2.6s ease-in-out infinite;
+}
+
+@keyframes noren-respiro-sx {
+  50% {
+    transform: rotate(2.2deg) scaleX(0.97);
+  }
+}
+
+@keyframes noren-respiro-dx {
+  50% {
+    transform: rotate(-2.2deg) scaleX(0.97);
+  }
+}
+
+.is-aperta .noren__telo {
+  opacity: 0;
+  transition: transform 1s cubic-bezier(0.5, 0, 0.3, 1), opacity 0.5s ease 0.55s;
+}
+
+.is-aperta .noren__telo--sx {
+  transform: rotate(40deg) scaleX(0.35);
+}
+
+.is-aperta .noren__telo--dx {
+  transform: rotate(-40deg) scaleX(0.35);
+}
+
+.noren__kanji {
+  position: absolute;
+  left: 50%;
+  top: 40cqh;
+  width: 38cqw;
+  height: 38cqw;
+  translate: -50% -50%;
+}
+
+/* Il bancone per due: largo quanto lo schermo e appoggiato in basso, così resta tutto
+   in vista. In alto sfuma nel buio. */
+.tavola {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100cqw;
+  aspect-ratio: 1080 / 1935;
+  background: center / cover no-repeat;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 16%);
+}
+
+.is-tavola .tavola {
+  opacity: 1;
+}
+
+/* I bigliettini: nascono dal bancone e si posano uno sull'altro nel buio sopra. */
+.invito {
+  position: absolute;
+  left: 50cqw;
+  top: calc(50cqh - 41.3cqw);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 78cqw;
+  height: min(92cqw, calc(100cqh - 108cqw));
+  margin: 0;
+  padding: 7cqw;
+  translate: -50% -50%;
+  border-radius: 0.8cqw;
+  background: var(--grana), #f7f2e8;
+  box-shadow: 0 2cqw 7cqw rgba(0, 0, 0, 0.6);
+  color: #2a2622;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(46cqh) scale(0.2) rotate(8deg);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+  pointer-events: none;
+}
+
+/* Doppio filetto rosso, come il cartoncino dell'inizio. */
+.invito::before {
+  content: "";
+  position: absolute;
+  inset: 2.4cqw;
+  border: 0.3cqw solid var(--rosso);
+  outline: 0.15cqw solid var(--rosso);
+  outline-offset: -1.3cqw;
+}
+
+.invito.is-mostrato {
+  opacity: 1;
+  transform: rotate(var(--storto));
+}
+
+.is-attesa .invito.is-ultimo {
+  animation: invito-respiro 2.2s ease-in-out infinite;
+}
+
+@keyframes invito-respiro {
+  50% {
+    scale: 1.018;
+  }
+}
+
+/* Le righe compaiono una dopo l'altra, dopo che il bigliettino si è posato. */
+.invito > * {
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease calc(0.65s + var(--i, 0) * 0.3s);
+}
+
+.invito.is-mostrato > * {
+  opacity: 1;
+}
+
+.invito__sopra {
+  color: var(--rosso);
+  font-size: 2.7cqw;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+}
+
+.invito__titolo {
+  margin-top: 3cqw;
+  color: var(--rosso);
+  font: 400 12cqw / 1.05 "Pinyon Script", cursive;
+  text-wrap: balance;
+}
+
+.invito__fregio {
+  width: 18cqw;
+  margin-top: 3.5cqw;
+  color: var(--rosso);
+}
+
+.invito__fregio svg {
+  display: block;
+  width: 100%;
+}
+
+.invito__locale {
+  margin-top: 4cqw;
+  font-size: 4.1cqw;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  text-transform: uppercase;
+}
+
+.invito__citta {
+  margin-top: 1.2cqw;
+  font-size: 3.9cqw;
+  font-style: italic;
+}
+
+.invito__kanji {
+  height: 19cqw;
+}
+
+.invito__kanji--tre {
+  width: 57cqw;
+}
+
+.invito__kanji--due {
+  width: 38cqw;
+}
+
+.invito__lettura {
+  margin-top: 3cqw;
+  color: var(--rosso);
+  font-size: 6cqw;
+  font-style: italic;
+  letter-spacing: 0.1em;
+}
+
+.invito__significato {
+  margin-top: 1.2cqw;
+  font-size: 5cqw;
+}
+
+.invito__nota {
+  max-width: 56cqw;
+  margin-top: 3.4cqw;
+  color: #5d5148;
+  font-size: 3.7cqw;
+  font-style: italic;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.invito__frase p {
+  margin: 0;
+  font-size: 4.5cqw;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+.invito__frase p + p {
+  margin-top: 0.5em;
+}
+
+.invito__chiusa {
+  margin-top: 4.5cqw;
+  color: var(--rosso);
+  font: 400 12cqw / 1 "Pinyon Script", cursive;
+}
+
+.invito__firma {
+  align-self: flex-end;
+  margin-top: 4cqw;
+  margin-right: 5cqw;
+  font: 400 8cqw / 1 "Pinyon Script", cursive;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-pronta:not(.is-trascina) .noren__telo,
+  .is-attesa .invito.is-ultimo {
+    animation: none;
+  }
+}

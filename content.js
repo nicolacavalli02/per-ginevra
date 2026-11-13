@@ -89,23 +89,34 @@ export default {
     { foto: 'assets/img/ricordo-4.webp', didascalia: 'Ma soprattutto, stare insieme' },
   ],
 
-  // Scena 6
+  // Scena 6: dietro la tendina, quattro bigliettini uno dopo l'altro.
   reveal: {
+    fondo: 'assets/img/tavola.webp', // il bancone apparecchiato per due
+
+    // Primo bigliettino: il regalo.
+    annuncio: 'Il tuo regalo',
     regalo: 'Cena omakase per due',
-    luogo: 'Sonkei Omakase, Roncadelle',
+    locale: 'Sonkei Omakase',
+    citta: 'Roncadelle',
+
+    // Secondo e terzo: le due parole. I caratteri li scrive il pennello.
     omakase: {
       kanji: 'お任せ',
       lettura: 'omakase',
       significato: '«mi affido a te»',
-      nota: '[per una sera non scegli niente]',
+      nota: 'Per una sera non scegli niente.',
     },
     sonkei: {
       kanji: '尊敬',
       lettura: 'sonkei',
       significato: 'stima, rispetto',
-      nota: '[quello che provo per quello che hai fatto]',
+      nota: 'Quello che provo per quello che hai fatto.',
     },
-    fraseFinale: '[frase finale di Nicola]',
+
+    // Quarto: le parole di Nicola.
+    frase: ['Sai che non sono bravo coi bigliettini fisici.', 'Ho provato con questo.'],
+    chiusa: 'Ti amo.',
+    firma: 'Nicola',
   },
 
   // Scena 7

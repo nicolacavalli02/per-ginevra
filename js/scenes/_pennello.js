@@ -3,7 +3,9 @@
 //
 // creaPennello(canvas, kanji, opzioni) → { scrivi(durataMs, allaFine), ferma() }
 //   kanji: elenco di caratteri, ognuno un elenco di tracciati SVG (linee centrali)
-//   opzioni.lato: lato del riquadro dei tracciati; i caratteri si impilano in verticale
+//   opzioni.lato: lato del riquadro dei tracciati
+//   opzioni.orizzontale: i caratteri si affiancano; altrimenti si impilano in verticale
+//   opzioni.colore: colore dell'inchiostro
 
 const SVG = 'http://www.w3.org/2000/svg';
 const SETOLE = 7; // la pennellata è fatta di tante setole affiancate
@@ -27,7 +29,7 @@ function profilo(k) {
   return attacco * coda;
 }
 
-export function creaPennello(canvas, kanji, { lato = 109, colore = '#1b1613' } = {}) {
+export function creaPennello(canvas, kanji, { lato = 109, colore = '#1b1613', orizzontale = false } = {}) {
   const g = canvas.getContext('2d');
   const caso = casuale(20261120);
 
@@ -49,7 +51,7 @@ export function creaPennello(canvas, kanji, { lato = 109, colore = '#1b1613' } =
       const punti = [];
       for (let j = 0; j <= quanti; j++) {
         const p = misura.getPointAtLength((j / quanti) * lungo);
-        punti.push([p.x, p.y + riga * lato]);
+        punti.push(orizzontale ? [p.x + riga * lato, p.y] : [p.x, p.y + riga * lato]);
       }
       tratti.push({
         punti,
@@ -72,8 +74,9 @@ export function creaPennello(canvas, kanji, { lato = 109, colore = '#1b1613' } =
     const densita = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(canvas.clientWidth * densita);
     canvas.height = Math.round(canvas.clientHeight * densita);
-    const scala = canvas.width / lato;
-    g.setTransform(scala, 0, 0, canvas.height / (lato * righe), 0, 0);
+    const lungo = lato * righe; // il lato lungo del canvas contiene tutti i caratteri
+    if (orizzontale) g.setTransform(canvas.width / lungo, 0, 0, canvas.height / lato, 0, 0);
+    else g.setTransform(canvas.width / lato, 0, 0, canvas.height / lungo, 0, 0);
     g.fillStyle = colore;
   }
 

@@ -57,6 +57,10 @@ const SUONI = {
     nota(c, u, { freq: 140, picco: 0.25, coda: 0.09 });
   },
   tendina: (c, u) => rumore(c, u, { filtro: 'lowpass', freq: 900, picco: 0.2, attacco: 0.15, coda: 0.6 }),
+  // Un accordo che si apre piano: sta al posto della musica della rivelazione.
+  rivelazione: (c, u) => {
+    for (const freq of [261.6, 329.6, 392, 523.3]) nota(c, u, { freq, picco: 0.07, attacco: 0.7, coda: 4 });
+  },
 };
 
 export function createAudio(pulsante) {
