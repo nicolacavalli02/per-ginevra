@@ -2511,3 +2511,103 @@
     animation: none;
   }
 }
+
+/* ---------- Scena 7: il finale ---------- */
+
+/* Trasparente: sotto resta la scena 6 con il bancone per due. */
+.finale {
+  background: none;
+  cursor: default;
+}
+
+.finale.is-sola {
+  background: #050403;
+}
+
+.finale.is-sola .tavola {
+  opacity: 1;
+  transition: none;
+}
+
+/* I bigliettini della scena 6 salgono e spariscono in alto, uno dopo l'altro:
+   portano lo sguardo verso l'alto. */
+.is-sotto.is-congedo .invito.is-mostrato {
+  opacity: 0;
+  transform: translateY(-75cqh) rotate(calc(var(--storto) * -3));
+  transition: transform 1.3s cubic-bezier(0.5, 0, 0.8, 0.4), opacity 0.5s ease 0.8s;
+}
+
+.is-sotto.is-congedo .invito.is-mostrato:nth-of-type(3) {
+  transition-delay: 0.08s, 0.88s;
+}
+
+.is-sotto.is-congedo .invito.is-mostrato:nth-of-type(2) {
+  transition-delay: 0.16s, 0.96s;
+}
+
+.is-sotto.is-congedo .invito.is-mostrato:nth-of-type(1) {
+  transition-delay: 0.24s, 1.04s;
+}
+
+/* Il bancone si abbassa di luce: restano in primo piano le parole. */
+.finale__velo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 4, 3, 0.15) 0%, rgba(5, 4, 3, 0.5) 100%);
+  opacity: 0;
+  transition: opacity 2.5s ease;
+}
+
+.is-congedo .finale__velo {
+  opacity: 1;
+}
+
+.finale__prima,
+.finale__poi {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  opacity: 0;
+  translate: 0 2cqw;
+  transition: opacity 1.4s ease, translate 1.4s ease;
+}
+
+.finale__prima {
+  top: calc(50cqh - 58cqw);
+  color: #dfd0b3;
+  font-size: 5cqw;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+.finale__poi {
+  top: calc(50cqh - 47cqw);
+  color: #f6e8c9;
+  font: 400 17cqw / 1.1 "Pinyon Script", cursive;
+  text-shadow: 0 0 6cqw rgba(255, 190, 110, 0.45);
+}
+
+.is-prima .finale__prima,
+.is-poi .finale__poi {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* L'unico movimento che resta: la luce delle ultime parole respira piano. */
+.is-poi .finale__poi {
+  animation: finale-respiro 5s ease-in-out 1.6s infinite;
+}
+
+@keyframes finale-respiro {
+  50% {
+    text-shadow: 0 0 9cqw rgba(255, 200, 130, 0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-poi .finale__poi {
+    animation: none;
+  }
+}

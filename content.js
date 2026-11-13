@@ -120,5 +120,9 @@ export default {
   },
 
   // Scena 7
-  finale: 'Il resto te lo dico a voce. Alza gli occhi.',
+  // Due righe: la prima piccola, la seconda grande. Poi lo schermo resta fermo.
+  finale: {
+    prima: 'Il resto te lo dico a voce.',
+    poi: 'Alza gli occhi.',
+  },
 };
