@@ -82,10 +82,11 @@ export default {
 
   // Un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.
   ricordi: [
-    { foto: null, didascalia: '[didascalia del ricordo 1]' },
-    { foto: null, didascalia: '[didascalia del ricordo 2]' },
-    { foto: null, didascalia: '[didascalia del ricordo 3]' },
-    { foto: null, didascalia: '[didascalia del ricordo 4]' },
+    // Le quattro didascalie si leggono di seguito, come un'unica frase.
+    { foto: 'assets/img/ricordo-1.webp', didascalia: 'Ci piace girare per città' },
+    { foto: 'assets/img/ricordo-2.webp', didascalia: 'Ci piace mangiare. Tanto' },
+    { foto: 'assets/img/ricordo-3.webp', didascalia: 'Camminare, un po’ meno' },
+    { foto: 'assets/img/ricordo-4.webp', didascalia: 'Ma soprattutto, stare insieme' },
   ],
 
   // Scena 6

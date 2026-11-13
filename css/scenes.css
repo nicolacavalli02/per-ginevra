@@ -2197,6 +2197,7 @@
   color: #3b2f26;
   font: 400 calc(var(--w) * 0.092) / 1.1 "Pinyon Script", cursive;
   text-align: center;
+  text-wrap: balance; /* se va su due righe, le fa lunghe uguali */
 }
 
 @media (prefers-reduced-motion: reduce) {
