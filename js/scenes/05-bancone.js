@@ -11,7 +11,8 @@
 import { NASTRO } from './_nastro.js';
 import { crea, creaSala } from './_sala.js';
 
-// Il pezzo servito per ogni ricordo, nell'ordine.
+// Il pezzo disegnato per ogni ricordo, nell'ordine: vale finché in content.js
+// (bancone.pezzi) non c'è il ritaglio fotografico corrispondente.
 const PEZZI = ['salmone', 'tonno', 'gambero', 'ikura'];
 
 // Dove si mettono via le polaroid: in fila davanti a lei, leggermente storte.
@@ -57,7 +58,18 @@ export default {
     piatto.append(crea('div', 'piatto__piano'), crea('div', 'piatto__bordo'));
     const invito = crea('div', 'banco__invito');
 
+    // Un ritaglio fotografico, messo esattamente dov'era nella foto del bancone.
+    const ritaglio = (classe, { immagine, riquadro: [x, y, w, h] }) => {
+      const img = crea('img', classe);
+      img.alt = '';
+      img.src = immagine;
+      img.style.cssText = `left:${x}%;top:${y}%;width:${w}%;height:${h}%`;
+      return img;
+    };
+
     const pezzi = c.ricordi.map((_, i) => {
+      const vero = c.bancone.pezzi?.[i];
+      if (vero) return ritaglio('pezzo pezzo--foto', vero);
       const pezzo = crea('div', `pezzo pezzo--${PEZZI[i % PEZZI.length]}`);
       pezzo.append(crea('div', 'pezzo__riso'), crea('div', 'pezzo__sopra'));
       return pezzo;
@@ -76,7 +88,13 @@ export default {
     }
     maki.append(rotolo, crea('div', 'maki__alga'), fiocco, fette);
 
-    banco.append(piatto, invito, ...pezzi, maki);
+    // Se ci sono le tre foto (pergamena, rotolo, fette) prendono il posto del maki disegnato.
+    const makiVero = c.bancone.maki;
+    const ultimo = makiVero
+      ? ['pergamena', 'rotolo', 'fette'].map((nome) => ritaglio(`maki-foto maki-foto--${nome}`, makiVero[nome]))
+      : [maki];
+
+    banco.append(piatto, invito, ...pezzi, ...ultimo);
     sala.pendolo.before(banco);
 
     // --- Le polaroid dei ricordi ---

@@ -1781,7 +1781,7 @@
 .piatto {
   position: absolute;
   left: 50%;
-  top: 63%;
+  top: 64.4%;
   width: calc(var(--u) * 68);
   height: calc(var(--u) * 13.5);
   translate: -50% -50%;
@@ -1825,7 +1825,7 @@
 .banco__invito {
   position: absolute;
   left: 50%;
-  top: 61%;
+  top: 63.6%;
   width: calc(var(--u) * 46);
   height: calc(var(--u) * 18);
   translate: -50% -50%;
@@ -1848,7 +1848,7 @@
 .pezzo {
   position: absolute;
   left: 50%;
-  top: calc(63.2% - var(--u) * 10);
+  top: calc(65.4% - var(--u) * 10);
   width: calc(var(--u) * 19);
   height: calc(var(--u) * 10.5);
   translate: -50% 0;
@@ -1955,11 +1955,16 @@
     #c94e0e;
 }
 
+/* Un pezzo fotografico: posizione e misure arrivano da content.js, in percentuale della foto. */
+.pezzo--foto {
+  translate: none;
+}
+
 /* Ultimo pezzo: la pergamena, che diventa un rotolo di alga e poi sei fette. */
 .maki {
   position: absolute;
   left: 50%;
-  top: 62%;
+  top: 64.2%;
   width: calc(var(--u) * 40);
   height: calc(var(--u) * 6.6);
   translate: -50% -50%;
@@ -2076,6 +2081,42 @@
 .is-tagliato .maki__alga {
   opacity: 0;
   transition: opacity 0.2s ease;
+}
+
+/* Il maki fotografico: tre ritagli nello stesso punto, che si danno il cambio. */
+.maki-foto {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.maki-foto--pergamena {
+  transform: translateY(calc(var(--u) * -16)) rotate(-6deg);
+  transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.3s ease;
+}
+
+.is-pergamena .maki-foto--pergamena {
+  opacity: 1;
+  transform: none;
+}
+
+.is-alga .maki-foto--pergamena {
+  opacity: 0;
+  transition: opacity 0.9s ease 0.2s;
+}
+
+.is-alga .maki-foto--rotolo {
+  opacity: 1;
+}
+
+.is-tagliato .maki-foto--rotolo {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.is-tagliato .maki-foto--fette {
+  opacity: 1;
+  transition: opacity 0.25s ease;
 }
 
 /* Le polaroid dei ricordi: nascono dal piatto, si mostrano grandi nel buio sotto la
