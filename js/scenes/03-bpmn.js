@@ -77,7 +77,7 @@ export default {
   mount(el, ctx) {
     const c = ctx.content.processo;
     el.classList.add('biglietto', 'processo');
-    const festa = creaFesta(el);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo);
 
     // Altezza del palco in cqw: serve per partire dal centro e per la telecamera.
     const altezza = (el.clientHeight / el.clientWidth) * 100;

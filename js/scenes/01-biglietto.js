@@ -86,7 +86,7 @@ export default {
     busta.querySelector('.busta__scritta').textContent = biglietto.busta;
     busta.append(creaCartoncino(biglietto));
 
-    const festa = creaFesta(el);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo);
     el.append(busta);
 
     const stato = (classe) => () => el.classList.add(classe);

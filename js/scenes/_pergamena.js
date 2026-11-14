@@ -1,6 +1,6 @@
 // La pergamena arrotolata con il fiocco rosso: nasce nella scena 2, fa da gettone
 // nella 3 e cade nella 4. Se in content.js c'è la foto (pergamena.foto) si usa quella,
-// la stessa pergamena che torna sul piatto nella scena 5; altrimenti è disegnata.
+// altrimenti è disegnata.
 
 import { NASTRO } from './_nastro.js';
 

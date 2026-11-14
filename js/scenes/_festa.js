@@ -107,12 +107,20 @@ function crea(tag, classe) {
   return el;
 }
 
-export function creaFesta(el) {
+// fondo: la foto della festa (lucine e luci sfocate); senza, sono disegnate.
+export function creaFesta(el, fondo) {
   const sfondo = crea('div', 'festa');
   // Le animazioni partono "già in corsa" dal tempo trascorso dall'apertura della pagina:
   // così lucine e luci non scattano quando una scena passa lo sfondo alla successiva.
   sfondo.style.setProperty('--ora', `${n(performance.now() / 1000)}s`);
-  sfondo.append(creaBokeh(), creaLucine());
+  if (fondo) {
+    const foto = crea('img', 'festa__foto');
+    foto.alt = '';
+    foto.src = fondo;
+    sfondo.append(foto);
+  } else {
+    sfondo.append(creaBokeh(), creaLucine());
+  }
 
   const candele = ['sx', 'dx'].map((lato) => crea('i', `festa__candela festa__candela--${lato}`));
   const canvas = crea('canvas', 'festa__particelle');

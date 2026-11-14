@@ -7,6 +7,7 @@ export default {
 
   // Scena 1: la busta e il cartoncino.
   biglietto: {
+    fondo: 'assets/img/festa.webp', // la festa serale dietro la busta; null per quella disegnata
     busta: 'Per Ginevra', // scritto a mano sulla busta
     sigillo: 'G',
     titolo: 'Congratulazioni',
@@ -21,10 +22,11 @@ export default {
     data: '20 novembre 2026',
   },
 
-  // La pergamena arrotolata delle scene 2, 3 e 4: la stessa che torna sul piatto.
+  // La pergamena arrotolata delle scene 2, 3 e 4.
   // foto: null per usare quella disegnata.
   pergamena: {
     foto: 'assets/img/pergamena.webp',
+    video: 'assets/video/pergamena.mp4', // il biglietto che si arrotola (scena 2); null per quello disegnato
   },
 
   tesi: {
@@ -72,19 +74,19 @@ export default {
     // I pezzi serviti, uno per ricordo, ritagliati dalla stessa foto del bancone.
     // riquadro: dove sta il ritaglio nella foto, in percentuale [x, y, larghezza, altezza].
     // Dove c'è null il pezzo è ancora quello disegnato.
+    // Lo chef che serve ogni pezzo, nello stesso ordine; null per farlo arrivare senza video.
+    video: [
+      'assets/video/chef-salmone.mp4',
+      'assets/video/chef-tonno.mp4',
+      'assets/video/chef-gambero.mp4',
+      null,
+    ],
     pezzi: [
       { immagine: 'assets/img/pezzo-salmone.webp', riquadro: [35.83, 58.29, 30.19, 9.1] },
       { immagine: 'assets/img/pezzo-tonno.webp', riquadro: [35.46, 57.98, 30, 9.61] },
       { immagine: 'assets/img/pezzo-gambero.webp', riquadro: [33.33, 58.04, 42.04, 10.44] },
       { immagine: 'assets/img/pezzo-gunkan.webp', riquadro: [36.67, 54.57, 25.46, 12.92] },
     ],
-    // L'ultimo pezzo, in tre momenti: la pergamena, il rotolo di alga, le fette.
-    // Oppure maki: null per usare quello disegnato.
-    maki: {
-      pergamena: { immagine: 'assets/img/maki-pergamena.webp', riquadro: [28.7, 55.25, 54.72, 13.23] },
-      rotolo: { immagine: 'assets/img/maki-rotolo.webp', riquadro: [28.43, 54.11, 54.81, 14.42] },
-      fette: { immagine: 'assets/img/maki-fette.webp', riquadro: [20.19, 56.07, 60.46, 10.65] },
-    },
   },
 
   // Un ricordo per ogni pezzo servito. foto: percorso in assets/img/, oppure null.

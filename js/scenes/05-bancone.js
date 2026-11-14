@@ -1,14 +1,12 @@
 // Scena 5: il bancone. Lo chef serve un pezzo alla volta; toccando il pezzo, al suo
-// posto si sviluppa una polaroid con un ricordo. Dopo i quattro ricordi arriva la
-// pergamena della scena 2: il nastro diventa alga, un taglio, ed è un maki.
+// posto si sviluppa una polaroid con un ricordo. Messo via il quarto ricordo si passa
+// alla tendina della scena 6.
 //
-// Comincia identica a come finisce la scena 4 (lanterna accesa, bancone in basso),
+// Comincia identica a come finisce la scena 4 (lanterna accesa sopra il bancone),
 // per questo entra con uno stacco netto.
 //
-// Per ora i pezzi sono disegnati e le foto sono segnaposto: i contenuti veri si
-// mettono in content.js (ricordi e bancone.fondo), senza toccare questo file.
+// Foto, didascalie e immagini dei pezzi stanno in content.js (ricordi e bancone).
 
-import { NASTRO } from './_nastro.js';
 import { crea, creaSala } from './_sala.js';
 
 // Il pezzo disegnato per ogni ricordo, nell'ordine: vale finché in content.js
@@ -25,13 +23,12 @@ const POSTI = [
 ];
 
 const TEMPI = {
-  servizio: 150, // la lanterna sale, lo sguardo scende sul bancone
+  servizio: 150, // la lanterna sale ancora un po', la scritta se ne va
   primoPezzo: 1900,
   servito: 700, // quanto ci mette un pezzo ad arrivare sul piatto
   sviluppo: 1500, // quanto ci mette la foto a comparire
   riposta: 500,
-  alga: 1100,
-  fine: 2400, // dal taglio al cambio scena
+  fine: 1300, // dall'ultimo ricordo messo via al cambio scena
 };
 
 export default {
@@ -44,17 +41,8 @@ export default {
     const sala = creaSala(el, c);
     sala.pennello.subito();
 
-    // --- Il banco: ha le proporzioni della foto di fondo, tutto il resto si misura su di lui ---
-    const banco = crea('div', 'banco');
-    if (c.bancone.fondo) {
-      const foto = crea('img', 'banco__foto');
-      foto.alt = '';
-      foto.addEventListener('load', () => el.classList.add('ha-fondo'));
-      foto.src = c.bancone.fondo;
-      banco.append(foto);
-    }
-
-    const piatto = crea('div', 'piatto');
+    // --- Sul banco: tutto si misura sulla foto di fondo ---
+    const piatto = crea('div', 'piatto'); // serve solo se manca la foto, che il piatto ce l'ha già
     piatto.append(crea('div', 'piatto__piano'), crea('div', 'piatto__bordo'));
     const invito = crea('div', 'banco__invito');
 
@@ -75,27 +63,20 @@ export default {
       return pezzo;
     });
 
-    // L'ultimo pezzo: la pergamena, poi l'alga, poi il maki tagliato.
-    const maki = crea('div', 'maki');
-    const rotolo = crea('div', 'maki__rotolo');
-    const fiocco = crea('div', 'maki__fiocco');
-    fiocco.innerHTML = NASTRO;
-    const fette = crea('div', 'maki__fette');
-    for (let i = 0; i < 6; i++) {
-      const fetta = crea('div', 'maki__fetta');
-      fetta.style.setProperty('--i', i);
-      fette.append(fetta);
-    }
-    maki.append(rotolo, crea('div', 'maki__alga'), fiocco, fette);
+    // I video dello chef che serve ogni pezzo (dove ci sono): partono dalla foto del piatto
+    // vuoto e finiscono sulla foto con il pezzo, che poi prende il loro posto.
+    const video = c.ricordi.map((_, i) => {
+      const sorgente = c.bancone.video?.[i];
+      if (!sorgente || !c.bancone.pezzi?.[i]) return null;
+      const v = crea('video', 'banco__video');
+      v.src = sorgente;
+      v.muted = true;
+      v.playsInline = true;
+      v.preload = 'auto';
+      return v;
+    });
 
-    // Se ci sono le tre foto (pergamena, rotolo, fette) prendono il posto del maki disegnato.
-    const makiVero = c.bancone.maki;
-    const ultimo = makiVero
-      ? ['pergamena', 'rotolo', 'fette'].map((nome) => ritaglio(`maki-foto maki-foto--${nome}`, makiVero[nome]))
-      : [maki];
-
-    banco.append(piatto, invito, ...pezzi, ...ultimo);
-    sala.pendolo.before(banco);
+    sala.banco.append(piatto, ...video.filter(Boolean), invito, ...pezzi);
 
     // --- Le polaroid dei ricordi ---
     const ricordi = c.ricordi.map((ricordo, i) => {
@@ -128,9 +109,38 @@ export default {
       });
 
     function servi(i) {
-      ctx.audio.play('coltello');
-      pezzi[i].classList.add('is-servito');
-      libera(TEMPI.servito);
+      const v = video[i];
+      const senzaVideo = () => {
+        ctx.audio.play('coltello');
+        pezzi[i].classList.add('is-servito');
+        libera(TEMPI.servito);
+      };
+      if (!v) return senzaVideo();
+
+      // Con il video: alla fine il pezzo fotografico, identico all'ultimo fotogramma, lo sostituisce.
+      let fatto = false;
+      const posato = () => {
+        if (fatto) return;
+        fatto = true;
+        pezzi[i].classList.add('pezzo--subito', 'is-servito');
+        v.classList.remove('is-in-scena');
+        libera(0);
+      };
+      v.addEventListener('ended', posato, { once: true });
+      v.currentTime = 0;
+      v.play().then(
+        () => {
+          v.classList.add('is-in-scena');
+          ctx.after(1500, () => ctx.audio.play('coltello')); // il pezzo tocca il piatto
+        },
+        () => {
+          // Il video non parte: il pezzo arriva come senza video.
+          if (fatto) return;
+          fatto = true;
+          senzaVideo();
+        },
+      );
+      ctx.after(9000, posato); // per sicurezza
     }
 
     function rivela(i) {
@@ -150,28 +160,9 @@ export default {
       passi.push(() => rivela(i));
       passi.push(() => {
         riponi(i);
-        if (i < c.ricordi.length - 1) {
-          ctx.after(TEMPI.riposta, () => servi(i + 1));
-        } else {
-          // Finiti i ricordi, sul piatto arriva la pergamena.
-          ctx.after(TEMPI.riposta, () => {
-            ctx.audio.play('carta');
-            el.classList.add('is-pergamena');
-            libera(TEMPI.servito);
-          });
-        }
+        if (i < c.ricordi.length - 1) ctx.after(TEMPI.riposta, () => servi(i + 1));
+        else ctx.after(TEMPI.fine, () => ctx.next()); // finiti i ricordi, cala la tendina
       });
-    });
-    passi.push(() => {
-      ctx.audio.play('carta');
-      el.classList.add('is-alga');
-      libera(TEMPI.alga);
-    });
-    passi.push(() => {
-      // Tre colpi di coltello, poi si va alla tendina.
-      for (const ms of [0, 190, 380]) ctx.after(ms, () => ctx.audio.play('coltello'));
-      ctx.after(380, () => el.classList.add('is-tagliato'));
-      ctx.after(TEMPI.fine, () => ctx.next());
     });
 
     let passo = 0;

@@ -1,3 +1,6 @@
 .claude/settings.local.json
 Thumbs.db
 .DS_Store
+
+# Materiale di lavoro per i video (non fa parte della pagina)
+flow/

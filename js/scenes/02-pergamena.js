@@ -4,6 +4,10 @@
 //
 // Comincia identica a come finisce la scena 1 (stesso sfondo, stesso cartoncino),
 // per questo entra con uno stacco netto.
+//
+// Se in content.js c'è il video (pergamena.video) l'arrotolamento è quello girato con
+// Flow: parte dallo stesso cartoncino e finisce sul rotolo con il fiocco, poi sfuma nella
+// pergamena fotografica. Se il video non parte, si usa l'animazione disegnata.
 
 import { creaCartoncino } from './_cartoncino.js';
 import { creaFesta } from './_festa.js';
@@ -26,6 +30,10 @@ const TEMPI = {
   fine: 6400, // si passa alla scena 3
 };
 
+// Con il video: quando parte, quanto prima della sua fine sfuma nella foto, e dopo
+// quanto si passa alla scena 3.
+const VIDEO = { parte: 250, sfuma: 450, poi: 650 };
+
 const n = (x) => +x.toFixed(2);
 const morbido = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
@@ -34,7 +42,7 @@ export default {
 
   mount(el, ctx) {
     el.classList.add('biglietto', 'pergamena', 'is-scritta');
-    const festa = creaFesta(el);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo);
 
     const foglio = document.createElement('div');
     foglio.className = 'pergamena__foglio';
@@ -105,7 +113,70 @@ export default {
     const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let raf = 0;
 
-    ctx.after(TEMPI.arrotola, () => {
+    // --- Con il video ---
+    const sorgente = ctx.content.pergamena?.video;
+    if (sorgente && foto && !fermo) {
+      const video = document.createElement('video');
+      video.className = 'pergamena__video';
+      video.src = sorgente;
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      el.append(video);
+
+      let finito = false;
+      let disegnata = false;
+      const chiudi = () => {
+        if (finito || disegnata) return;
+        finito = true;
+        // La pergamena fotografica sta nel foglio: lo porta dove l'animazione disegnata
+        // lo lascerebbe, così il rotolo è al centro come nel video.
+        cartoncino.style.visibility = 'hidden';
+        foglio.style.transition = 'none';
+        foglio.style.transform = `translate(${W / 2}cqw, ${H / 2}cqw)`;
+        el.classList.add('is-foto', 'is-fine-video'); // il video sfuma nella pergamena fotografica
+        ctx.after(VIDEO.poi, () => ctx.next());
+      };
+      // Se il video non parte (file mancante, rete lenta) si torna all'animazione disegnata.
+      const ripiega = () => {
+        if (disegnata || finito) return;
+        disegnata = true;
+        video.remove();
+        el.classList.remove('is-video');
+        animaDisegnata(0);
+      };
+      video.addEventListener('error', ripiega);
+      video.addEventListener('timeupdate', () => {
+        if (video.duration && video.currentTime >= video.duration - VIDEO.sfuma / 1000) chiudi();
+      });
+      video.addEventListener('ended', chiudi);
+
+      ctx.after(VIDEO.parte, () => {
+        video.play().then(() => {
+          el.classList.add('is-video');
+          ctx.audio.play('carta');
+          ctx.after(1400, () => ctx.audio.play('carta'));
+        }, ripiega);
+      });
+      // Se dopo un secondo e mezzo non è ancora partito, meglio il disegno.
+      ctx.after(VIDEO.parte + 1500, () => {
+        if (video.paused) ripiega();
+      });
+      ctx.after(VIDEO.parte + 9000, chiudi); // per sicurezza
+
+      return () => {
+        video.pause();
+        cancelAnimationFrame(raf);
+        festa.distruggi();
+      };
+    }
+
+    animaDisegnata(TEMPI.arrotola);
+
+    // --- Senza video: l'animazione disegnata. "ritardo" è quando comincia ad arrotolarsi. ---
+    function animaDisegnata(ritardo) {
+    const t0 = ritardo - TEMPI.arrotola;
+    ctx.after(TEMPI.arrotola + t0, () => {
       ctx.audio.play('carta');
       if (fermo) {
         posa(0);
@@ -122,11 +193,12 @@ export default {
       };
       raf = requestAnimationFrame(passo);
     });
-    ctx.after(TEMPI.arrotola + 1400, () => ctx.audio.play('carta'));
-    ctx.after(TEMPI.nastro, stato('is-nastro'));
-    ctx.after(TEMPI.fiocco, stato('is-fiocco'));
-    if (foto) ctx.after(TEMPI.foto, stato('is-foto'));
-    ctx.after(TEMPI.fine, () => ctx.next());
+    ctx.after(TEMPI.arrotola + 1400 + t0, () => ctx.audio.play('carta'));
+    ctx.after(TEMPI.nastro + t0, stato('is-nastro'));
+    ctx.after(TEMPI.fiocco + t0, stato('is-fiocco'));
+    if (foto) ctx.after(TEMPI.foto + t0, stato('is-foto'));
+    ctx.after(TEMPI.fine + t0, () => ctx.next());
+    }
 
     return () => {
       cancelAnimationFrame(raf);
