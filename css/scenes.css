@@ -1432,12 +1432,12 @@
 
 /* La pergamena parte dov'era nel diagramma, poi cade fuori scena passando dietro la lanterna. */
 .kaizen .gettone {
-  transform: translate(50cqw, calc(50cqh - 13cqw)) scale(0.22);
+  transform: translate(50cqw, calc(50cqh - 13cqw)) scale(0.17);
   transition: transform 1s cubic-bezier(0.55, 0, 0.85, 0.45);
 }
 
 .kaizen.is-sera .gettone {
-  transform: translate(50cqw, 112cqh) scale(0.22) rotate(24deg);
+  transform: translate(50cqw, 112cqh) scale(0.17) rotate(24deg);
 }
 
 /* Tutto quello che pende dall'alto: filo, alone e lanterna dondolano e salgono insieme. */
@@ -2455,10 +2455,10 @@
    Il fiocco sporge sopra, per questo la foto sta più in alto che in basso. */
 .rotolo-foto {
   position: absolute;
-  left: -31cqw;
-  top: -16.2cqw;
+  left: -40cqw;
+  top: -20.9cqw;
   z-index: 5;
-  width: 62cqw;
+  width: 80cqw; /* largo quanto il biglietto da cui nasce */
   max-width: none;
   height: auto;
   filter: drop-shadow(0 1.6cqw 2.2cqw rgba(0, 0, 0, 0.42));
@@ -2680,4 +2680,74 @@
 
 .pezzo.pezzo--subito {
   transition: none;
+}
+
+/* ---------- Scena 1: fontane e busta in video ---------- */
+
+/* Le fontane: la base del getto (a metà larghezza e al 73% dell'altezza del video) sta
+   sulla punta della candela. Il nero del video sparisce sommandosi alla luce sotto. */
+.festa__fontana {
+  position: absolute;
+  top: calc(100cqh - 24cqw - 51.9cqw);
+  z-index: 3;
+  width: 40cqw;
+  height: 71.1cqw;
+  object-fit: cover;
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  /* in alto le scintille arrivano al bordo del video: le sfuma */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 38%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 38%);
+}
+
+.festa__fontana--sx {
+  left: calc(10.7cqw - 20cqw);
+}
+
+.festa__fontana--dx {
+  right: calc(10.7cqw - 20cqw);
+  transform: scaleX(-1);
+}
+
+/* La busta: largo quanto lo schermo e centrato, come il cartoncino; sopra e sotto
+   sfuma nella festa. Sotto, l'animazione disegnata gira nascosta. */
+.busta__video {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  z-index: 6;
+  width: 100cqw;
+  height: calc(100cqw * 16 / 9);
+  translate: 0 -50%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  transition: opacity 0.12s ease;
+}
+
+.is-video .busta__video {
+  opacity: 1;
+}
+
+.is-video .busta {
+  visibility: hidden;
+  transition: visibility 0s linear 0.12s;
+}
+
+.is-fine-video .busta__video {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.is-fine-video .busta {
+  visibility: visible;
+  transition: none;
+}
+
+/* Della busta disegnata, dopo il video resta solo il cartoncino. */
+.is-fine-video .busta > :not(.cartoncino) {
+  visibility: hidden;
 }

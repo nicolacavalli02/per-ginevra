@@ -8,6 +8,8 @@ export default {
   // Scena 1: la busta e il cartoncino.
   biglietto: {
     fondo: 'assets/img/festa.webp', // la festa serale dietro la busta; null per quella disegnata
+    fontana: 'assets/video/fontana.mp4', // le due fontane luminose; null per quelle disegnate
+    video: 'assets/video/busta.mp4', // la busta che si apre; null per l'animazione disegnata
     busta: 'Per Ginevra', // scritto a mano sulla busta
     sigillo: 'G',
     titolo: 'Congratulazioni',

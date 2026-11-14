@@ -108,7 +108,9 @@ function crea(tag, classe) {
 }
 
 // fondo: la foto della festa (lucine e luci sfocate); senza, sono disegnate.
-export function creaFesta(el, fondo) {
+// fontana: il video di una fontana luminosa su fondo nero; se c'è, sostituisce le
+// scintille disegnate (il nero sparisce perché il video si somma alla luce sotto).
+export function creaFesta(el, fondo, fontana) {
   const sfondo = crea('div', 'festa');
   // Le animazioni partono "già in corsa" dal tempo trascorso dall'apertura della pagina:
   // così lucine e luci non scattano quando una scena passa lo sfondo alla successiva.
@@ -127,7 +129,20 @@ export function creaFesta(el, fondo) {
   const riverbero = crea('div', 'festa__riverbero'); // la luce che le fontane gettano sulla scena
   const alone = crea('div', 'festa__alone');
 
-  el.append(sfondo, ...candele, canvas, riverbero, alone);
+  // Le due fontane in video, una per candela (la destra è specchiata).
+  const getti = fontana
+    ? ['sx', 'dx'].map((lato) => {
+        const v = crea('video', `festa__fontana festa__fontana--${lato}`);
+        v.src = fontana;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.preload = 'auto';
+        return v;
+      })
+    : [];
+
+  el.append(sfondo, ...candele, ...getti, canvas, riverbero, alone);
 
   const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const g = canvas.getContext('2d');
@@ -240,7 +255,7 @@ export function creaFesta(el, fondo) {
       g.stroke();
     });
 
-    if (intensita <= 0.02) return;
+    if (intensita <= 0.02 || getti.length) return;
     for (const punta of punte()) {
       const trema = 0.85 + Math.random() * 0.3;
 
@@ -277,7 +292,8 @@ export function creaFesta(el, fondo) {
     intensita += (bersaglio - intensita) * Math.min(1, dt * 4);
     riverbero.style.opacity = n(intensita * (0.9 + Math.random() * 0.1));
 
-    if (intensita > 0.02) {
+    for (const v of getti) v.style.opacity = n(Math.min(1, intensita * 1.15));
+    if (intensita > 0.02 && !getti.length) {
       resto += intensita * 240 * dt;
       const quante = Math.floor(resto);
       resto -= quante;
@@ -332,6 +348,11 @@ export function creaFesta(el, fondo) {
     // Accende, regola o spegne le fontane (0 = spente, 1 = piena forza).
     fontane(forza) {
       bersaglio = forza;
+      // I video girano solo mentre servono.
+      for (const v of getti) {
+        if (forza > 0) v.play().catch(() => {});
+      }
+      if (forza <= 0 && getti.length) setTimeout(() => bersaglio <= 0 && getti.forEach((v) => v.pause()), 1500);
       avvia();
     },
     coriandoli(fx = 0.5, fy = 0.5, quanti = 70) {
@@ -342,6 +363,7 @@ export function creaFesta(el, fondo) {
       scoppio(fx, fy, quanti, { colori: COLORI_CERALACCA, grandezza: 0.012, spinta: 0.55, vita: 1.3 });
     },
     distruggi() {
+      for (const v of getti) v.pause();
       cancelAnimationFrame(raf);
       raf = 0;
       osservatore.disconnect();
@@ -349,7 +371,7 @@ export function creaFesta(el, fondo) {
     // Toglie la festa dalla scena (quando lo sfondo cambia del tutto).
     rimuovi() {
       this.distruggi();
-      for (const pezzo of [sfondo, ...candele, canvas, riverbero, alone]) pezzo.remove();
+      for (const pezzo of [sfondo, ...candele, ...getti, canvas, riverbero, alone]) pezzo.remove();
     },
   };
 }

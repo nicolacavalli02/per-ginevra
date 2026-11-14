@@ -2,6 +2,11 @@
 // dall'alto, e al suo arrivo si accendono due fontane luminose.
 // Primo tap: il sigillo si spezza, il lembo si apre, il cartoncino esce e si scrive.
 // Secondo tap: si passa alla scena 2.
+//
+// Se in content.js c'è il video (biglietto.video), l'apertura è quella girata con Flow:
+// parte dalla busta chiusa e finisce sul cartoncino vuoto al centro, poi il testo si
+// scrive sul cartoncino vero. Sotto il video l'animazione disegnata gira lo stesso,
+// nascosta, così se il video non parte basta mostrarla.
 
 import { creaCartoncino } from './_cartoncino.js';
 import { creaFesta } from './_festa.js';
@@ -24,6 +29,10 @@ const TEMPI = {
   scritta: 3300, // il testo compare, un elemento alla volta
   pronta: 6300, // si può toccare per andare avanti
 };
+
+// Con il video: quanto prima della sua fine sfuma nel cartoncino vero, e da lì quando
+// comincia a scriversi il testo e quando si può andare avanti.
+const VIDEO = { sfuma: 350, scritta: 250, pronta: 3250 };
 
 const BUSTA = `
   <div class="busta__retro"></div>
@@ -86,8 +95,19 @@ export default {
     busta.querySelector('.busta__scritta').textContent = biglietto.busta;
     busta.append(creaCartoncino(biglietto));
 
-    const festa = creaFesta(el, ctx.content.biglietto.fondo);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo, ctx.content.biglietto.fontana);
     el.append(busta);
+
+    let video = null;
+    if (biglietto.video && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video = document.createElement('video');
+      video.className = 'busta__video';
+      video.src = biglietto.video;
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      el.append(video);
+    }
 
     const stato = (classe) => () => el.classList.add(classe);
     let aperta = false;
@@ -96,13 +116,58 @@ export default {
       aperta = true;
       ctx.audio.play('sigillo');
       el.classList.add('is-rotto');
-      // Il sigillo che si spezza fa scoppiare i coriandoli e ravviva le fontane,
-      // che poi si spengono per lasciare leggere il cartoncino.
       const altezzaSigillo = 0.5 + (0.06 * el.clientWidth) / el.clientHeight;
-      festa.frammenti(0.5, altezzaSigillo);
-      festa.coriandoli(0.5, altezzaSigillo);
-      festa.fontane(1);
-      ctx.after(TEMPI.fontaneSpente, () => festa.fontane(0));
+      const inizio = performance.now();
+
+      // Il testo si scrive e il tap successivo è attivo: dopo il video, o ai tempi soliti.
+      let scritto = false;
+      const scrivi = (ritardoScritta, ritardoPronta) => {
+        if (scritto) return;
+        scritto = true;
+        ctx.after(ritardoScritta, stato('is-scritta'));
+        ctx.after(ritardoPronta, () => {
+          el.classList.add('is-pronta');
+          ctx.onTap(el, () => ctx.next());
+        });
+      };
+      const senzaVideo = () => {
+        // Il sigillo che si spezza fa scoppiare i coriandoli e ravviva le fontane,
+        // che poi si spengono per lasciare leggere il cartoncino.
+        festa.frammenti(0.5, altezzaSigillo);
+        festa.coriandoli(0.5, altezzaSigillo);
+        festa.fontane(1);
+        ctx.after(TEMPI.fontaneSpente, () => festa.fontane(0));
+        const passato = performance.now() - inizio;
+        scrivi(Math.max(0, TEMPI.scritta - passato), Math.max(0, TEMPI.pronta - passato));
+      };
+
+      if (video) {
+        // Le fontane si spengono: il video le coprirebbe a metà.
+        festa.fontane(0);
+        el.classList.add('is-video');
+        const fine = () => {
+          if (scritto) return;
+          el.classList.add('is-fine-video');
+          festa.coriandoli(0.5, 0.15, 50);
+          scrivi(VIDEO.scritta, VIDEO.pronta);
+        };
+        const ripiega = () => {
+          if (scritto) return;
+          el.classList.remove('is-video');
+          video.remove();
+          senzaVideo();
+        };
+        video.addEventListener('timeupdate', () => {
+          if (video.duration && video.currentTime >= video.duration - VIDEO.sfuma / 1000) fine();
+        });
+        video.addEventListener('ended', fine);
+        video.addEventListener('error', ripiega);
+        video.play().catch(ripiega);
+        ctx.after(1200, () => video.paused && !scritto && ripiega()); // non è partito
+        ctx.after(9000, fine); // per sicurezza
+      } else {
+        senzaVideo();
+      }
       ctx.after(TEMPI.lembo, stato('is-aperta'));
       ctx.after(TEMPI.dietro, stato('is-dietro'));
       ctx.after(TEMPI.esce, () => {
@@ -110,11 +175,6 @@ export default {
         ctx.audio.play('carta');
       });
       ctx.after(TEMPI.sola, stato('is-sola'));
-      ctx.after(TEMPI.scritta, stato('is-scritta'));
-      ctx.after(TEMPI.pronta, () => {
-        el.classList.add('is-pronta');
-        ctx.onTap(el, () => ctx.next());
-      });
     }
 
     // La busta scende dall'alto; quando atterra salgono le candele e partono le fontane.
@@ -130,6 +190,9 @@ export default {
       });
     });
 
-    return () => festa.distruggi();
+    return () => {
+      video?.pause();
+      festa.distruggi();
+    };
   },
 };

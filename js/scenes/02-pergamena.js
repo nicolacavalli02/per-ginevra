@@ -42,7 +42,7 @@ export default {
 
   mount(el, ctx) {
     el.classList.add('biglietto', 'pergamena', 'is-scritta');
-    const festa = creaFesta(el, ctx.content.biglietto.fondo);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo, ctx.content.biglietto.fontana);
 
     const foglio = document.createElement('div');
     foglio.className = 'pergamena__foglio';

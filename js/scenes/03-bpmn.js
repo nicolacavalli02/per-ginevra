@@ -11,7 +11,7 @@ import { creaGettone } from './_pergamena.js';
 
 // Tutte le misure sono in cqw, nel sistema di coordinate del diagramma ("mondo").
 const BARRA = 15; // altezza della barra in alto: il mondo comincia lì sotto
-const SCALA_GETTONE = 0.22;
+const SCALA_GETTONE = 0.17; // la pergamena fotografica è larga 80cqw: nel diagramma ne resta circa 14
 const VELOCITA = 62; // cqw al secondo lungo le frecce
 const FERMATA = 4.5; // il gettone si ferma poco prima della punta della freccia
 
@@ -77,7 +77,7 @@ export default {
   mount(el, ctx) {
     const c = ctx.content.processo;
     el.classList.add('biglietto', 'processo');
-    const festa = creaFesta(el, ctx.content.biglietto.fondo);
+    const festa = creaFesta(el, ctx.content.biglietto.fondo, ctx.content.biglietto.fontana);
 
     // Altezza del palco in cqw: serve per partire dal centro e per la telecamera.
     const altezza = (el.clientHeight / el.clientWidth) * 100;
