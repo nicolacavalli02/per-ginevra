@@ -10,6 +10,8 @@ import { creaPennello } from './_pennello.js';
 import { crea } from './_sala.js';
 
 const TEMPI = {
+  trascina: 1.2, // con il video: quanti secondi di apertura segue il dito
+  dopoVideo: 900, // dal bancone svelato al primo bigliettino
   cala: 80, // la tendina comincia a scendere
   chiusa: 1050, // ha coperto tutto: sotto si può fare buio
   scrive: 1100, // primo tratto del pennello sulla tendina
@@ -103,7 +105,24 @@ export default {
     noren.setAttribute('aria-label', c.sonkei.kanji);
     noren.append(...teli.map((t) => t.telo), crea('div', 'noren__asta'));
 
-    el.append(tavola, ...biglietti, noren);
+    // La tendina girata con Flow (se c'è): mentre lei la scosta il video segue il dito,
+    // poi va fino in fondo e resta fermo sull'ultimo fotogramma, che è il bancone per due.
+    let video = null;
+    if (c.tendaVideo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.classList.add('con-tenda');
+      video = crea('video', 'tenda__video');
+      video.src = c.tendaVideo;
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      video.addEventListener('error', () => {
+        video?.remove();
+        video = null;
+        el.classList.remove('is-tenda-video', 'con-tenda');
+      });
+    }
+
+    el.append(tavola, ...(video ? [video] : []), ...biglietti, noren);
 
     const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // attesa → pronta (si può aprire) → aperta → biglietti (un tap = il prossimo) ⇄ occupata
@@ -133,6 +152,20 @@ export default {
       el.classList.remove('is-pronta', 'is-trascina');
       el.classList.add('is-aperta');
       ctx.audio.play('tendina');
+      if (video) {
+        el.classList.add('is-tenda-video');
+        let fatto = false;
+        const svelato = () => {
+          if (fatto) return;
+          fatto = true;
+          ctx.audio.play('rivelazione');
+          ctx.after(TEMPI.dopoVideo, () => mostra(0));
+        };
+        video.addEventListener('ended', svelato, { once: true });
+        video.play().catch(svelato);
+        ctx.after(6000, svelato); // per sicurezza
+        return;
+      }
       ctx.after(TEMPI.silenzio, () => {
         el.classList.add('is-tavola');
         ctx.audio.play('rivelazione');
@@ -145,13 +178,25 @@ export default {
       onMove({ dx, dy }) {
         if (stato !== 'pronta') return;
         el.classList.add('is-trascina');
-        el.style.setProperty('--apri', Math.min(1, Math.hypot(dx, dy) / (el.clientWidth * 0.45)).toFixed(3));
+        const p = Math.min(1, Math.hypot(dx, dy) / (el.clientWidth * 0.45));
+        el.style.setProperty('--apri', p.toFixed(3));
+        // Con il video: i teli seguono il dito nella prima parte dell'apertura.
+        if (video && video.readyState >= 1) {
+          el.classList.add('is-tenda-video');
+          video.currentTime = p * TEMPI.trascina;
+        }
       },
       onEnd({ swiped }) {
         if (stato !== 'pronta') return;
         el.classList.remove('is-trascina');
         if (swiped) apri();
-        else el.style.setProperty('--apri', '0');
+        else {
+          el.style.setProperty('--apri', '0');
+          if (video) {
+            el.classList.remove('is-tenda-video'); // torna la tendina vera, chiusa
+            video.currentTime = 0;
+          }
+        }
       },
     });
 

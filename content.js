@@ -28,7 +28,6 @@ export default {
   // foto: null per usare quella disegnata.
   pergamena: {
     foto: 'assets/img/pergamena.webp',
-    video: 'assets/video/pergamena.mp4', // il biglietto che si arrotola (scena 2); null per quello disegnato
   },
 
   tesi: {
@@ -104,6 +103,7 @@ export default {
   reveal: {
     fondo: 'assets/img/tavola.webp', // il bancone apparecchiato per due
     tessuto: 'assets/img/tessuto.webp', // la stoffa della tendina; null per quella disegnata
+    tendaVideo: 'assets/video/tenda.mp4', // la tendina che si apre, girata con Flow; null per quella disegnata
 
     // Primo bigliettino: il regalo.
     annuncio: 'Il tuo regalo',

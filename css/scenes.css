@@ -2751,3 +2751,62 @@
 .is-fine-video .busta > :not(.cartoncino) {
   visibility: hidden;
 }
+
+/* ---------- Scena 2: arrotolamento dal basso ---------- */
+
+/* Il rotolo nasce già orizzontale sul bordo basso del cartoncino e sale. */
+.dal-basso .rotolo {
+  border-radius: 1.4cqw / 50%;
+  box-shadow:
+    0 -0.6cqw 1.6cqw rgba(50, 35, 20, 0.28),
+    0 1.4cqw 2.6cqw rgba(0, 0, 0, 0.45);
+}
+
+/* Il fiocco disegnato serve solo se manca la pergamena fotografica. */
+.dal-basso.is-foto .rotolo {
+  opacity: 0;
+  transition: opacity 0.75s ease;
+}
+
+/* ---------- Scena 6: la tendina in video ---------- */
+
+/* Come il bancone per due: largo quanto lo schermo, appoggiato in basso, sfuma in alto
+   nel buio. Il primo fotogramma è la tendina chiusa, l'ultimo il bancone. */
+.tenda__video {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100cqw;
+  height: calc(100cqw * 16 / 9);
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%);
+  transition: opacity 0.2s ease;
+}
+
+.is-tenda-video .tenda__video {
+  opacity: 1;
+}
+
+/* Il video prende il posto della tendina disegnata e del bancone in foto. */
+.is-tenda-video .noren {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.is-tenda-video .tavola {
+  display: none;
+}
+
+/* Con il video la tendina disegnata ha la stessa inquadratura del video (appesa sopra
+   la sua parte alta, con il buio sopra sui telefoni più alti), così non salta quando
+   il video prende il suo posto. */
+.con-tenda .noren {
+  top: calc(100cqh - 100cqw * 16 / 9);
+}
+
+.con-tenda .noren__kanji {
+  top: calc(100cqw * 16 / 9 * 0.4 - 1.4cqw);
+}
