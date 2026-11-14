@@ -79,7 +79,7 @@ export default {
       'assets/video/chef-salmone.mp4',
       'assets/video/chef-tonno.mp4',
       'assets/video/chef-gambero.mp4',
-      null,
+      'assets/video/chef-gunkan.mp4',
     ],
     pezzi: [
       { immagine: 'assets/img/pezzo-salmone.webp', riquadro: [35.83, 58.29, 30.19, 9.1] },
