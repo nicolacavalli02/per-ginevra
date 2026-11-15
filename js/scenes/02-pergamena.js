@@ -25,7 +25,8 @@ const morbido = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 
 
 export default {
   taglio: true,
-  ambiente: 'festa',
+  ambiente: null, // la festa sfuma piano mentre il biglietto si arrotola
+  ambienteDissolvenza: 4,
 
   mount(el, ctx) {
     el.classList.add('biglietto', 'pergamena', 'is-scritta', 'arrotola');
@@ -64,7 +65,6 @@ export default {
     let raf = 0;
 
     ctx.after(TEMPI.arrotola, () => {
-      ctx.audio.play('carta');
       if (fermo) return posa(1);
       const inizio = performance.now();
       const passo = (t) => {
@@ -75,7 +75,6 @@ export default {
       };
       raf = requestAnimationFrame(passo);
     });
-    ctx.after(TEMPI.arrotola + 1300, () => ctx.audio.play('carta'));
     ctx.after(TEMPI.nastro, stato('is-nastro'));
     ctx.after(TEMPI.fiocco, stato('is-fiocco'));
     ctx.after(TEMPI.fine, () => ctx.next());

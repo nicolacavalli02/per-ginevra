@@ -10,6 +10,7 @@
 
 import { creaCartoncino } from './_cartoncino.js';
 import { creaFesta } from './_festa.js';
+import { alTempo } from './_video.js';
 
 // Arrivo della busta, in ms dall'inizio della scena.
 const ARRIVO = {
@@ -33,6 +34,12 @@ const TEMPI = {
 // Con il video: quanto prima della sua fine sfuma nel cartoncino vero, e da lì quando
 // comincia a scriversi il testo e quando si può andare avanti.
 const VIDEO = { sfuma: 350, scritta: 250, pronta: 3250 };
+
+// I suoni agganciati ai fotogrammi del video della busta, in secondi.
+const SUONI_VIDEO = {
+  sigillo: 0.55, // la ceralacca si crepa e si spezza
+  carta: 2.6, // il cartoncino comincia a uscire dalla busta
+};
 
 const BUSTA = `
   <div class="busta__retro"></div>
@@ -116,8 +123,15 @@ export default {
 
     function apri() {
       aperta = true;
-      ctx.audio.play('sigillo');
       el.classList.add('is-rotto');
+      // Il crack: subito senza video, sul fotogramma giusto con il video. Una volta sola.
+      let crepato = false;
+      const crepa = () => {
+        if (crepato) return;
+        crepato = true;
+        ctx.audio.play('sigillo');
+        ctx.audio.vibra(25);
+      };
       const altezzaSigillo = 0.5 + (0.06 * el.clientWidth) / el.clientHeight;
       const inizio = performance.now();
 
@@ -135,6 +149,7 @@ export default {
       const senzaVideo = () => {
         // Il sigillo che si spezza fa scoppiare i coriandoli e ravviva le fontane,
         // che poi si spengono per lasciare leggere il cartoncino.
+        crepa();
         festa.frammenti(0.5, altezzaSigillo);
         festa.coriandoli(0.5, altezzaSigillo);
         festa.fontane(1);
@@ -163,6 +178,8 @@ export default {
           if (video.duration && video.currentTime >= video.duration - VIDEO.sfuma / 1000) fine();
         });
         video.addEventListener('ended', fine);
+        alTempo(video, SUONI_VIDEO.sigillo, crepa);
+        alTempo(video, SUONI_VIDEO.carta, () => ctx.audio.play('carta'));
         video.addEventListener('error', ripiega);
         video.play().catch(ripiega);
         ctx.after(1200, () => video.paused && !scritto && ripiega()); // non è partito
@@ -174,7 +191,7 @@ export default {
       ctx.after(TEMPI.dietro, stato('is-dietro'));
       ctx.after(TEMPI.esce, () => {
         el.classList.add('is-fuori');
-        ctx.audio.play('carta');
+        if (!video) ctx.audio.play('carta'); // con il video la carta segue il suo fotogramma
       });
       ctx.after(TEMPI.sola, stato('is-sola'));
     }

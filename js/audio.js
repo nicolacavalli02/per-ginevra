@@ -76,8 +76,28 @@ const SUONI = {
   },
 };
 
-// Volume di ogni canale sotto il master: da regolare a orecchio nel mix finale.
-const VOLUMI = { effetti: 0.9, ambiente: 0.35, musica: 0.8 };
+// Volume di ogni canale sotto il master.
+const VOLUMI = { effetti: 1, ambiente: 1, musica: 1 };
+
+// Il mix: quanto suona ogni file rispetto agli altri, in dB. I file escono tutti con lo
+// stesso volume percepito (strumenti/prepara-audio.js), quindi qui c'è solo la scelta:
+// 0 = pieno (i gesti di lei), −6 = medio, −14 e oltre = appena sotto, per non dare fastidio.
+const LIVELLI = {
+  sigillo: 0,
+  tendina: 0,
+  faro: -2,
+  carta: -7,
+  pennello: -6,
+  campanella: -6,
+  soffio: -8,
+  scintille: -15,
+  ding: -15,
+  chime: -15,
+  errore: -15,
+  click: -20,
+  festa: -25,
+};
+const livello = (nome) => 10 ** ((LIVELLI[nome] ?? 0) / 20);
 
 // createAudio(pulsante, { suoni, log })
 //   suoni: { nome: 'assets/audio/…' | null } da content.js. Senza file (o finché non è
@@ -149,7 +169,7 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
     const t = ctx.currentTime;
     suono.g.gain.cancelScheduledValues(t);
     suono.g.gain.setValueAtTime(suono.g.gain.value, t);
-    suono.g.gain.linearRampToValueAtTime(0, t + secondi);
+    suono.g.gain.setTargetAtTime(0, t, secondi / 5);
     suono.s.stop(t + secondi + 0.05);
   }
 
@@ -176,7 +196,7 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
     ambienteInCorso = null;
     if (b) {
       ambienteInCorso = { nome: ambienteVoluto, ...sorgente(b, canali.ambiente, { loop: true }) };
-      entra(ambienteInCorso, ambienteDissolvenza);
+      entra(ambienteInCorso, ambienteDissolvenza, livello(ambienteVoluto));
       scrivi('ambiente', ambienteVoluto);
     } else {
       scrivi('ambiente spento');
@@ -227,7 +247,7 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
         // Una piccola variazione di tono e volume: i suoni ripetuti non sembrano tutti uguali.
         const caso = () => Math.random() * 2 - 1;
         const { s } = sorgente(b, canali.effetti, {
-          volume: volume * (1 - Math.abs(caso()) * variazione),
+          volume: volume * livello(nome) * (1 - Math.abs(caso()) * variazione),
           velocita: 1 + caso() * variazione * 0.5,
         });
         s.start();
@@ -262,7 +282,7 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
       }
       sfuma(musicaInCorso, dissolvenza);
       musicaInCorso = { nome, ...sorgente(b, canali.musica) };
-      entra(musicaInCorso, attacco);
+      entra(musicaInCorso, attacco, livello(nome));
       scrivi('musica', nome);
     },
 

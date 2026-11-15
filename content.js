@@ -145,12 +145,10 @@ export default {
   // sintetizzato in js/audio.js (per gli effetti) o niente (per ambienti e musica).
   suoni: {
     // Effetti
-    sigillo: null, // ceralacca che si spezza (scene 1 e 6)
+    sigillo: 'assets/audio/sigillo.m4a', // ceralacca che si spezza (scene 1 e 6)
     coriandoli: null, // scoppio leggero di coriandoli
-    scintille: null, // sfrigolio delle fontane, scintille del sigillo
-    carta: null, // carta che scivola, polaroid, bigliettini
-    arrotola: null, // il biglietto che si arrotola
-    nastro: null, // il fiocco del nastro
+    scintille: 'assets/audio/scintille.m4a', // sfrigolio delle fontane, scintille del sigillo
+    carta: 'assets/audio/carta.m4a', // carta che scivola, polaroid, bigliettini
     ding: null, // ogni indizio del diagramma
     click: null, // tap e scelte ai bivi
     errore: null, // "No, non ha capito", "Indizi esauriti"
@@ -164,7 +162,7 @@ export default {
     faro: null, // l'interruttore del fascio di luce
     soffio: null, // la busta che scende
     // Ambienti, in loop
-    festa: null, // scene 1-2: brusio lontano e calici
+    festa: 'assets/audio/festa.m4a', // scene 1-2: brusio lontano e calici
     sala: null, // scene 4-6: brusio di ristorante
     // Musica, dal regalo alla fine
     finale: null,

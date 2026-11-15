@@ -73,7 +73,7 @@ function etichetta(testo, stile) {
 
 export default {
   taglio: true,
-  ambiente: null, // la festa sfuma: il diagramma è silenzioso, solo click e ding
+  ambiente: null, // il diagramma è silenzioso, solo click e ding
 
   mount(el, ctx) {
     const c = ctx.content.processo;
