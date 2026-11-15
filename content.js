@@ -42,21 +42,20 @@ export default {
     raccolta: 'Raccogliere Customer Insights',
     // Gli indizi: graduali, senza dire di cosa si tratta.
     insight: [
-      'Anni di esami, appunti e scadenze. Ha deciso, organizzato e chiuso tutto lei.',
-      'Ha due grandi passioni. Nicola le conosce bene tutte e due.',
       'Non si indossa, non si legge, non si appende.',
+      'Ha due grandi passioni. Nicola le conosce bene tutte e due.',
       'Vuole fare qualcosa nei giorni dopo Capodanno.',
     ],
     // Ai bivi qualunque scelta porta allo stesso esito.
     bivio1: {
       domanda: 'Ha già capito cos’è?',
-      scelte: ['Sì', 'Certo'],
+      scelte: ['Sì', 'Ho un sospetto'],
       esito: 'No, non ha capito',
       nota: 'Tutte le strade portano qui.',
     },
     bivio2: {
-      domanda: 'Vuole un altro indizio?',
-      scelte: ['Sì', 'Anche due'],
+      domanda: 'Vuoi un altro indizio?',
+      scelte: ['Sì', 'Dimmi subito il regalo'],
       esito: 'Indizi esauriti',
     },
     fine: 'Continuous Improvement',
@@ -110,7 +109,6 @@ export default {
     // sigillo esce il bigliettino.
     preludio: 'E adesso…', // compare nel buio, prima che scenda la busta
     busta: 'Il tuo regalo', // scritto sulla busta
-    annuncio: 'Il tuo regalo',
     regalo: 'Cena omakase per due',
     locale: 'Sonkei Omakase',
     citta: 'Roncadelle',

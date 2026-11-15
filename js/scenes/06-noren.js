@@ -108,7 +108,6 @@ export default {
     fregio.innerHTML = FREGIO;
     const regalo = biglietto(
       -1.5,
-      crea('p', 'invito__sopra', c.annuncio),
       crea('h1', 'invito__titolo', c.regalo),
       fregio,
       crea('p', 'invito__locale', c.locale),
