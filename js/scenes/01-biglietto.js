@@ -11,6 +11,7 @@
 import { creaCartoncino } from './_cartoncino.js';
 import { creaFesta } from './_festa.js';
 import { alTempo } from './_video.js';
+import { schermoIntero } from '../schermo.js';
 
 // Arrivo della busta, in ms dall'inizio della scena.
 const ARRIVO = {
@@ -206,7 +207,8 @@ export default {
     ctx.after(ARRIVO.tap, () => {
       const togliTap = ctx.onTap(el, () => {
         togliTap();
-        apri();
+        // Sul telefono prima lo schermo intero: la busta si apre quando le misure sono già quelle nuove.
+        schermoIntero().then(apri);
       });
     });
 
