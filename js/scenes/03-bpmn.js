@@ -265,7 +265,11 @@ export default {
       }
       mostra(bivio.esito);
       telecamera(bivio.fuoco);
-      viaggia(pulsante.dataset.flusso, poi);
+      // Arrivato all'esito ("No, non ha capito", "Indizi esauriti"): la trombetta del fallimento.
+      viaggia(pulsante.dataset.flusso, () => {
+        ctx.audio.play('errore');
+        poi();
+      });
     }
 
     bivi[0].pulsanti.forEach((pulsante) =>
@@ -307,6 +311,7 @@ export default {
       () => {
         telecamera(NODI.fine[1], true);
         viaggia('f4', () => {
+          ctx.audio.play('chime'); // "Continuous Improvement"
           occupato = true;
           ctx.after(700, () => ctx.next());
         });
@@ -315,8 +320,7 @@ export default {
     let tappa = 0;
     ctx.onTap(el, () => {
       if (occupato || bivioAperto || tappa >= tappe.length) return;
-      ctx.audio.play('click');
-      tappe[tappa++]();
+      tappe[tappa++](); // il click suona solo sulle scelte ai bivi; qui bastano i ding
     });
 
     // --- Ingresso: la tela copre la festa mentre la pergamena diventa il gettone ---

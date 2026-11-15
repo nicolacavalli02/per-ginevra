@@ -25,12 +25,29 @@ const LIMITE_MAX = 6;
 
 // da: file in audio-grezzi · inizio/durata: il taglio, in secondi
 // entra/esce: dissolvenze in secondi · loop: secondi di sovrapposizione per chiudere il giro
-// stereo: lascia due canali (solo per la musica) · kbps: qualità AAC
+// stereo: lascia due canali (solo per la musica) · kbps: qualità
+// musica: Opus (.ogg) invece di AAC, a metà peso; e niente limitatore, che schiaccerebbe
+// la dinamica (gli archi che crescono)
 const RICETTE = {
   sigillo: { da: 'sigillo-b', inizio: 0.05, durata: 0.85, entra: 0.005, esce: 0.35 },
   scintille: { da: 'scintille-a', inizio: 10, durata: 3, entra: 0.08, esce: 1.6 },
   carta: { da: 'carta-b', inizio: 0.1, durata: 0.85, entra: 0.01, esce: 0.25 },
   festa: { da: 'festa-b', inizio: 6, durata: 14, loop: 2, kbps: 48 },
+  // Scena 3: il diagramma
+  ding: { da: 'ding-a', inizio: 0.07, durata: 1, entra: 0.005, esce: 0.6 },
+  click: { da: 'click', inizio: 0.14, durata: 0.35, entra: 0.003, esce: 0.12 },
+  errore: { da: 'errore-b', inizio: 0, durata: 2, entra: 0.01, esce: 0.6 },
+  chime: { da: 'chime-a', inizio: 0.02, durata: 0.75, entra: 0.005, esce: 0.25 },
+  // Scene 4 e 6
+  pennello: { da: 'pennello-b', inizio: 0.3, durata: 3.3, entra: 0.08, esce: 0.5 },
+  campanella: { da: 'campanella', inizio: 5.4, durata: 4, entra: 0.01, esce: 2 },
+  tendina: { da: 'tendina-a', inizio: 6.8, durata: 1.6, entra: 0.05, esce: 0.5 },
+  faro: { da: 'faro', inizio: 0.05, durata: 0.5, entra: 0.003, esce: 0.2 },
+  soffio: { da: 'soffio', inizio: 0.4, durata: 2, entra: 0.1, esce: 0.6 },
+  // Koto di Kyoto: la parte più uniforme, chiusa in loop, sotto lo chef e i ricordi.
+  giappone: { da: 'giappone-c', inizio: 18, durata: 42, loop: 3, musica: true, kbps: 32 },
+  // Archi: entra mentre crescono, il pieno arriva sul regalo, chiude sulla coda tranquilla.
+  finale: { da: 'finale-c', inizio: 33, durata: 87, entra: 0.3, esce: 7, stereo: true, musica: true, kbps: 48 },
 };
 
 const ffmpeg = (args) => execFileSync('ffmpeg', ['-hide_banner', '-nostdin', '-y', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -73,20 +90,29 @@ function prepara(nome, ricetta) {
   // 2. Volume percepito uguale per tutti: guadagno verso LOUDNESS; il limitatore tiene il
   //    picco sotto PICCO (anche quello che la compressione AAC aggiunge).
   const { i, tp } = leggiMisura(temp);
-  const guadagno = Math.min(LOUDNESS - i, PICCO - tp + LIMITE_MAX);
+  // Sotto i 0,4 s ffmpeg non misura il loudness: lì conta solo il picco.
+  const guadagno = Number.isFinite(i)
+    ? Math.min(LOUDNESS - i, PICCO - tp + (ricetta.musica ? 0 : LIMITE_MAX))
+    : PICCO - tp;
   const limite = (10 ** ((PICCO - 0.5) / 20)).toFixed(3);
+  const filtroVolume = ricetta.musica
+    ? `volume=${guadagno.toFixed(2)}dB`
+    : `volume=${guadagno.toFixed(2)}dB,alimiter=limit=${limite}:attack=1:release=40:level=false`;
 
-  // 3. AAC.
+  // 3. Codifica: AAC per gli effetti, Opus per la musica.
   const kbps = ricetta.kbps ?? (canali === 2 ? 96 : 64);
-  const finale = path.join(USCITA, `${nome}.m4a`);
-  ffmpeg(['-i', temp, '-af', `volume=${guadagno.toFixed(2)}dB,alimiter=limit=${limite}:attack=1:release=40:level=false`, '-c:a', 'aac', '-b:a', `${kbps}k`, '-movflags', '+faststart', finale]);
+  const finale = path.join(USCITA, `${nome}.${ricetta.musica ? 'ogg' : 'm4a'}`);
+  const codifica = ricetta.musica
+    ? ['-c:a', 'libopus', '-b:a', `${kbps}k`, '-vbr', 'on']
+    : ['-c:a', 'aac', '-b:a', `${kbps}k`, '-movflags', '+faststart'];
+  ffmpeg(['-i', temp, '-af', filtroVolume, ...codifica, finale]);
   fs.unlinkSync(temp);
 
   const dopo = leggiMisura(finale);
   const kb = Math.round(fs.statSync(finale).size / 1024);
   console.log(
     `${nome.padEnd(11)} ${durata.toFixed(2).padStart(5)}s  ${String(kb).padStart(4)} KB  ` +
-      `loudness ${i.toFixed(1)} → ${dopo.i.toFixed(1)} LUFS  picco ${dopo.tp.toFixed(1)} dB`,
+      `loudness ${Number.isFinite(i) ? i.toFixed(1) : "–"} → ${Number.isFinite(dopo.i) ? dopo.i.toFixed(1) : "–"} LUFS  picco ${dopo.tp.toFixed(1)} dB`,
   );
 }
 

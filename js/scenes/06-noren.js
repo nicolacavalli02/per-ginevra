@@ -93,7 +93,7 @@ function parola(storto, voce, classe) {
 
 export default {
   sopra: true,
-  ambiente: 'sala',
+  ambiente: 'giappone', // continua dalla scena 5 finché lei non apre la tendina
 
   mount(el, ctx) {
     const c = ctx.content.reveal;
@@ -217,7 +217,11 @@ export default {
 
       const pennello = pennelli[i];
       if (pennello) {
-        ctx.after(TEMPI.penna, () => (fermo ? pennello.subito() : pennello.scrivi(1500)));
+        ctx.after(TEMPI.penna, () => {
+          if (fermo) return pennello.subito();
+          pennello.scrivi(1500);
+          ctx.audio.play('pennello', { durata: 1.5 });
+        });
       }
       ctx.after(pennello ? 2600 : 2000, () => {
         stato = 'biglietti';
@@ -235,8 +239,10 @@ export default {
       ctx.after(REGALO.faro, () => {
         el.classList.add('is-faro');
         ctx.audio.play('faro');
+        ctx.audio.vibra(25);
       });
       ctx.after(REGALO.busta, () => {
+        ctx.audio.play('soffio'); // la busta scende nella luce
         el.classList.add('is-busta');
         el.classList.remove('is-preludio');
       });
@@ -251,6 +257,8 @@ export default {
     function apriRegalo() {
       stato = 'occupata';
       ctx.audio.play('sigillo');
+      ctx.audio.play('scintille');
+      ctx.audio.vibra([30, 60, 30]);
       el.classList.remove('is-sigillo');
       el.classList.add('is-rotta');
       sigillo.classList.add('is-rotto');
@@ -260,7 +268,8 @@ export default {
         regalo.classList.add('is-fuori');
       });
       ctx.after(REGALO.libero, () => {
-        ctx.audio.play('regalo');
+        ctx.audio.musica('finale', { attacco: 1.5 }); // gli archi: dal regalo fino alla fine
+        ctx.audio.vibra(90);
         biglietti[iRegalo - 1]?.classList.remove('is-ultimo');
         regalo.classList.add('is-libero', 'is-mostrato', 'is-ultimo');
         el.classList.add('is-busta-via');
@@ -274,6 +283,7 @@ export default {
 
     function apri() {
       stato = 'aperta';
+      ctx.audio.ambiente(null, { dissolvenza: 1.2 }); // aperta la tendina: un attimo di silenzio
       el.style.removeProperty('--apri');
       el.classList.remove('is-pronta', 'is-trascina');
       el.classList.add('is-aperta');
@@ -284,7 +294,6 @@ export default {
         const svelato = () => {
           if (fatto) return;
           fatto = true;
-          ctx.audio.play('rivelazione');
           ctx.after(TEMPI.dopoVideo, () => mostra(0));
         };
         video.addEventListener('ended', svelato, { once: true });
@@ -294,7 +303,6 @@ export default {
       }
       ctx.after(TEMPI.silenzio, () => {
         el.classList.add('is-tavola');
-        ctx.audio.play('rivelazione');
         ctx.after(TEMPI.primoBiglietto, () => mostra(0));
       });
     }
@@ -363,6 +371,7 @@ export default {
         pronta();
       } else {
         teli[0].pennello.scrivi(TEMPI.perKanji, () => teli[1].pennello.scrivi(TEMPI.perKanji, pronta));
+        ctx.audio.play('pennello', { durata: (2 * TEMPI.perKanji) / 1000 });
       }
     });
 

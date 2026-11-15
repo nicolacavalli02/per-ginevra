@@ -22,7 +22,7 @@ const TEMPI = {
 
 export default {
   sopra: true,
-  ambiente: null, // la sala entra quando si accende la lanterna
+  ambiente: null, // il koto entra quando si accende la lanterna
 
   mount(el, ctx) {
     // "biglietto" e "processo" servono solo per i colori e la grana della pergamena.
@@ -41,11 +41,15 @@ export default {
     ctx.after(TEMPI.scrive, () => {
       ctx.togliSotto(); // ormai il diagramma è coperto dalla sera
       if (fermo) sala.pennello.subito();
-      else sala.pennello.scrivi(TEMPI.scrittura);
+      else {
+        sala.pennello.scrivi(TEMPI.scrittura);
+        ctx.audio.play('pennello', { durata: TEMPI.scrittura / 1000 });
+      }
     });
     ctx.after(TEMPI.accende, () => {
       el.classList.add('is-accesa');
       ctx.audio.play('campanella');
+      ctx.audio.ambiente('giappone', { dissolvenza: 3 });
     });
     ctx.after(TEMPI.bancone, () => el.classList.add('is-bancone'));
     ctx.after(TEMPI.fine, () => ctx.next());

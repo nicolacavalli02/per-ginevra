@@ -146,25 +146,21 @@ export default {
   suoni: {
     // Effetti
     sigillo: 'assets/audio/sigillo.m4a', // ceralacca che si spezza (scene 1 e 6)
-    coriandoli: null, // scoppio leggero di coriandoli
     scintille: 'assets/audio/scintille.m4a', // sfrigolio delle fontane, scintille del sigillo
     carta: 'assets/audio/carta.m4a', // carta che scivola, polaroid, bigliettini
-    ding: null, // ogni indizio del diagramma
-    click: null, // tap e scelte ai bivi
-    errore: null, // "No, non ha capito", "Indizi esauriti"
-    chime: null, // "Continuous Improvement"
-    pennello: null, // il pennello che scrive i caratteri
-    campanella: null, // la lanterna che si accende
-    coltello: null, // il pezzo servito sul tagliere
-    piatto: null, // il pezzo posato sul piatto di ceramica
-    scatto: null, // la polaroid
-    tendina: null, // la stoffa della tendina
-    faro: null, // l'interruttore del fascio di luce
-    soffio: null, // la busta che scende
+    ding: 'assets/audio/ding.m4a', // ogni indizio del diagramma
+    click: 'assets/audio/click.m4a', // tap e scelte ai bivi
+    errore: 'assets/audio/errore.m4a', // "No, non ha capito", "Indizi esauriti"
+    chime: 'assets/audio/chime.m4a', // "Continuous Improvement"
+    pennello: 'assets/audio/pennello.m4a', // il pennello che scrive i caratteri
+    campanella: 'assets/audio/campanella.m4a', // la lanterna che si accende
+    tendina: 'assets/audio/tendina.m4a', // la stoffa della tendina
+    faro: 'assets/audio/faro.m4a', // l'interruttore del fascio di luce
+    soffio: 'assets/audio/soffio.m4a', // la busta che scende
     // Ambienti, in loop
     festa: 'assets/audio/festa.m4a', // scene 1-2: brusio lontano e calici
-    sala: null, // scene 4-6: brusio di ristorante
+    giappone: 'assets/audio/giappone.ogg', // scene 4-6: koto, dalla lanterna alla tendina
     // Musica, dal regalo alla fine
-    finale: null,
+    finale: 'assets/audio/finale.ogg', // archi
   },
 };

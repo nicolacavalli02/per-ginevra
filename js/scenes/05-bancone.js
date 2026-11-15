@@ -34,7 +34,7 @@ const TEMPI = {
 
 export default {
   taglio: true,
-  ambiente: 'sala',
+  ambiente: 'giappone',
 
   mount(el, ctx) {
     const c = ctx.content;
@@ -112,8 +112,8 @@ export default {
 
     function servi(i) {
       const v = video[i];
+      // Lo chef appoggia il pezzo senza rumori: sotto c'è il koto.
       const senzaVideo = () => {
-        ctx.audio.play('coltello');
         pezzi[i].classList.add('is-servito');
         libera(TEMPI.servito);
       };
@@ -133,7 +133,6 @@ export default {
       v.play().then(
         () => {
           v.classList.add('is-in-scena');
-          ctx.after(1500, () => ctx.audio.play('coltello')); // il pezzo tocca il piatto
         },
         () => {
           // Il video non parte: il pezzo arriva come senza video.

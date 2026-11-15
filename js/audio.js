@@ -85,7 +85,7 @@ const VOLUMI = { effetti: 1, ambiente: 1, musica: 1 };
 const LIVELLI = {
   sigillo: 0,
   tendina: 0,
-  faro: -2,
+  faro: 2, // il file è un colpo secco, più basso degli altri
   carta: -7,
   pennello: -6,
   campanella: -6,
@@ -96,6 +96,8 @@ const LIVELLI = {
   errore: -15,
   click: -20,
   festa: -25,
+  giappone: -13,
+  finale: -3,
 };
 const livello = (nome) => 10 ** ((LIVELLI[nome] ?? 0) / 20);
 
@@ -240,17 +242,24 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
 
   return {
     // Prima dello sblocco non suona nulla, senza errori.
-    play(nome, { volume = 1, variazione = 0 } = {}) {
+    // durata (secondi): lo accorcia con una breve sfumatura, per esempio il pennello
+    // che scrive per meno tempo del file.
+    play(nome, { volume = 1, variazione = 0, durata } = {}) {
       if (!ctx || !sbloccato) return;
       const b = buffer.get(nome);
       if (b) {
         // Una piccola variazione di tono e volume: i suoni ripetuti non sembrano tutti uguali.
         const caso = () => Math.random() * 2 - 1;
-        const { s } = sorgente(b, canali.effetti, {
-          volume: volume * livello(nome) * (1 - Math.abs(caso()) * variazione),
-          velocita: 1 + caso() * variazione * 0.5,
-        });
+        const v = volume * livello(nome) * (1 - Math.abs(caso()) * variazione);
+        const { s, g } = sorgente(b, canali.effetti, { volume: v, velocita: 1 + caso() * variazione * 0.5 });
         s.start();
+        if (durata && durata < b.duration) {
+          const t = ctx.currentTime;
+          const coda = Math.min(0.3, durata / 3);
+          g.gain.setValueAtTime(v, t + durata - coda);
+          g.gain.linearRampToValueAtTime(0, t + durata);
+          s.stop(t + durata + 0.02);
+        }
         scrivi('effetto', nome);
       } else if (SUONI[nome]) {
         SUONI[nome](ctx, canali.effetti);
