@@ -22,7 +22,7 @@ const TEMPI = {
 
 export default {
   sopra: true,
-  ambiente: null, // il koto entra quando si accende la lanterna
+  ambiente: null, // il sottofondo della tesi sfuma; il koto entra quando si accende la lanterna
 
   mount(el, ctx) {
     // "biglietto" e "processo" servono solo per i colori e la grana della pergamena.

@@ -33,7 +33,9 @@ const RICETTE = {
   scintille: { da: 'scintille-a', inizio: 10, durata: 3, entra: 0.08, esce: 1.6 },
   carta: { da: 'carta-b', inizio: 0.1, durata: 0.85, entra: 0.01, esce: 0.25 },
   festa: { da: 'festa-b', inizio: 6, durata: 14, loop: 2, kbps: 48 },
-  // Scena 3: il diagramma
+  // Scena 3: il diagramma. Il sottofondo è un pizzicato a frasi di 5,333 s: quattro frasi,
+  // tagliate sull'attacco, così il giro si richiude a tempo.
+  tesi: { da: 'tesi-c', inizio: 0.03, durata: 21.333, loop: 0.05, musica: true, kbps: 32 },
   ding: { da: 'ding-a', inizio: 0.07, durata: 1, entra: 0.005, esce: 0.6 },
   click: { da: 'click', inizio: 0.14, durata: 0.35, entra: 0.003, esce: 0.12 },
   errore: { da: 'errore-b', inizio: 0, durata: 2, entra: 0.01, esce: 0.6 },
@@ -47,7 +49,7 @@ const RICETTE = {
   // Koto di Kyoto: la parte più uniforme, chiusa in loop, sotto lo chef e i ricordi.
   giappone: { da: 'giappone-c', inizio: 18, durata: 42, loop: 3, musica: true, kbps: 32 },
   // Archi: entra mentre crescono, il pieno arriva sul regalo, chiude sulla coda tranquilla.
-  finale: { da: 'finale-c', inizio: 33, durata: 87, entra: 0.3, esce: 7, stereo: true, musica: true, kbps: 48 },
+  finale: { da: 'finale-c', inizio: 33, durata: 87, entra: 0.3, esce: 7, stereo: true, musica: true, kbps: 40 },
 };
 
 const ffmpeg = (args) => execFileSync('ffmpeg', ['-hide_banner', '-nostdin', '-y', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });

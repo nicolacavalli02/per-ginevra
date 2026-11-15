@@ -17,7 +17,7 @@ document.title = content.titoloPagina;
 const parametri = new URLSearchParams(location.search);
 
 // ?audio=log scrive in console ogni suono con il suo istante.
-const audio = createAudio(document.getElementById('mute'), {
+const audio = createAudio({
   suoni: content.suoni,
   log: parametri.get('audio') === 'log',
 });

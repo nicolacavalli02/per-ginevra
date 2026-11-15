@@ -1,4 +1,4 @@
-// Audio: si sblocca al primo tap, il pulsante mute è sempre attivo.
+// Audio: si sblocca al primo tap. Niente pulsante in pagina: il volume si regola dal telefono.
 // Effetti, tappeti d'ambiente e musica sono file (elencati in content.js, sezione suoni);
 // dove un file manca suonano i segnaposto sintetizzati qui sotto.
 
@@ -91,17 +91,18 @@ const LIVELLI = {
   campanella: -6,
   soffio: -8,
   scintille: -15,
-  ding: -15,
-  chime: -15,
-  errore: -15,
-  click: -20,
+  ding: -24,
+  chime: -20,
+  errore: -23,
+  click: -28,
   festa: -25,
+  tesi: -27, // di sottofondo: sotto ding e click
   giappone: -13,
   finale: -3,
 };
 const livello = (nome) => 10 ** ((LIVELLI[nome] ?? 0) / 20);
 
-// createAudio(pulsante, { suoni, log })
+// createAudio({ suoni, log })
 //   suoni: { nome: 'assets/audio/…' | null } da content.js. Senza file (o finché non è
 //          pronto) un effetto suona il segnaposto sintetizzato qui sopra.
 //   log:   con ?audio=log la console scrive ogni suono con il suo istante.
@@ -110,7 +111,7 @@ const livello = (nome) => 10 ** ((LIVELLI[nome] ?? 0) / 20);
 // ambiente(nome | null, { dissolvenza })  il tappeto in loop della scena
 // musica(nome | null, { attacco, dissolvenza })  la traccia finale, una volta sola
 // vibra(schema)  navigator.vibrate, se c'è e se l'audio non è muto
-export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
+export function createAudio({ suoni = {}, log = false } = {}) {
   const Contesto = window.AudioContext || window.webkitAudioContext;
   let muto = false;
   let sbloccato = false;
@@ -222,9 +223,6 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
     muto = valore;
     if (master) master.gain.setTargetAtTime(muto ? 0 : 1, ctx.currentTime, 0.02);
     if (muto) navigator.vibrate?.(0);
-    pulsante.classList.toggle('is-muted', muto);
-    pulsante.setAttribute('aria-pressed', String(muto));
-    pulsante.setAttribute('aria-label', muto ? 'Attiva audio' : 'Disattiva audio');
   }
 
   // Il browser permette l'audio solo dopo un gesto. Ogni tocco riprova a far ripartire
@@ -238,7 +236,6 @@ export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
     else ctx.resume();
   });
 
-  pulsante.addEventListener('click', () => setMuto(!muto));
 
   return {
     // Prima dello sblocco non suona nulla, senza errori.

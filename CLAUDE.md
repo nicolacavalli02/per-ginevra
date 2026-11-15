@@ -8,7 +8,7 @@ Viene consegnata di persona alla festa di laurea del 20 novembre 2026: lei la ap
 ## Vincoli
 - HTML, CSS e JS statici, senza backend. Le librerie si usano solo se servono davvero: chiedi prima.
 - Mobile-first, in verticale, ma deve funzionare anche su desktop. Tap e swipe devono funzionare anche col mouse.
-- L'audio parte dopo il primo tap, e un pulsante mute è sempre disponibile.
+- L'audio parte dopo il primo tap. Niente pulsante mute in pagina (deciso il 15/11/2026): un tocco per sbaglio spegnerebbe tutto; il volume si regola con i tasti del telefono.
 - Deve girare bene su Android (Chrome), l'unico telefono di riferimento. iPhone/Safari non è un requisito.
 - Leggera (meno di 5 MB), con `noindex` e nessun tracciamento.
 - Il parametro `?scene=N` salta alla scena N durante i test.

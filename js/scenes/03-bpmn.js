@@ -73,7 +73,8 @@ function etichetta(testo, stile) {
 
 export default {
   taglio: true,
-  ambiente: null, // il diagramma è silenzioso, solo click e ding
+  ambiente: 'tesi', // un sottofondo leggero sotto il diagramma, poi ding e click bassi
+  ambienteDissolvenza: 2.5,
 
   mount(el, ctx) {
     const c = ctx.content.processo;
