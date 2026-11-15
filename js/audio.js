@@ -95,7 +95,7 @@ const LIVELLI = {
   chime: -20,
   errore: -23,
   click: -28,
-  festa: -25,
+  luci: -10,
   tesi: -27, // di sottofondo: sotto ding e click
   giappone: -13,
   finale: -3,

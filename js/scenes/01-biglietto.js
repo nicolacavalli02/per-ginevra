@@ -89,7 +89,7 @@ const BUSTA = `
   </div>`;
 
 export default {
-  ambiente: 'festa',
+  ambiente: null, // niente brusio: il tappeto luminoso parte quando si apre il biglietto
 
   mount(el, ctx) {
     const biglietto = ctx.content.biglietto;
@@ -130,6 +130,7 @@ export default {
         if (crepato) return;
         crepato = true;
         ctx.audio.play('sigillo');
+        ctx.audio.musica('luci', { attacco: 0.6 }); // il tappeto luminoso sotto il biglietto
         ctx.audio.vibra(25);
       };
       const altezzaSigillo = 0.5 + (0.06 * el.clientWidth) / el.clientHeight;

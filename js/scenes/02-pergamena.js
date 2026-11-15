@@ -25,8 +25,7 @@ const morbido = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 
 
 export default {
   taglio: true,
-  ambiente: null, // la festa sfuma piano mentre il biglietto si arrotola
-  ambienteDissolvenza: 4,
+  ambiente: null,
 
   mount(el, ctx) {
     el.classList.add('biglietto', 'pergamena', 'is-scritta', 'arrotola');
@@ -64,6 +63,7 @@ export default {
     const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let raf = 0;
 
+    ctx.audio.musica(null, { dissolvenza: 4 }); // il tappeto luminoso sfuma mentre il biglietto si arrotola
     ctx.after(TEMPI.arrotola, () => {
       if (fermo) return posa(1);
       const inizio = performance.now();

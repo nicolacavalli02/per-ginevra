@@ -159,9 +159,9 @@ export default {
     soffio: 'assets/audio/soffio.m4a', // la busta che scende
     // Ambienti, in loop
     tesi: 'assets/audio/tesi.ogg', // scena 3: pizzicato in punta di piedi, sotto il diagramma
-    festa: 'assets/audio/festa.m4a', // scene 1-2: brusio lontano e calici
     giappone: 'assets/audio/giappone.ogg', // scene 4-6: koto, dalla lanterna alla tendina
-    // Musica, dal regalo alla fine
-    finale: 'assets/audio/finale.ogg', // archi
+    // Musiche, una alla volta
+    luci: 'assets/audio/luci.ogg', // scena 1: tappeto luminoso, dal sigillo alla pergamena
+    finale: 'assets/audio/finale.ogg', // scene 6-7: archi, dal regalo alla fine
   },
 };

@@ -38,6 +38,9 @@ const FLUSSI = {
 };
 
 // Dove guarda la "telecamera" a ogni tappa (altezza del mondo da tenere in vista).
+// Da "Continuous Improvement" raggiunto alla scena 4 (ms).
+const PAUSA_FINALE = 2000;
+
 const FUOCO = { insight: 84, bivio1: 143, esito1: 165, bivio2: 191, esito2: 213 };
 
 const INSIGHT_Y = [58, 80, 102]; // bordo alto delle schede degli indizi; sono alte 20
@@ -313,8 +316,9 @@ export default {
         telecamera(NODI.fine[1], true);
         viaggia('f4', () => {
           ctx.audio.play('chime'); // "Continuous Improvement"
+          ctx.audio.ambiente(null, { dissolvenza: 3 }); // il pizzicato si ritira piano
           occupato = true;
-          ctx.after(700, () => ctx.next());
+          ctx.after(PAUSA_FINALE, () => ctx.next()); // un attimo per leggere il traguardo
         });
       },
     ];

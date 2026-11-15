@@ -32,7 +32,9 @@ const RICETTE = {
   sigillo: { da: 'sigillo-b', inizio: 0.05, durata: 0.85, entra: 0.005, esce: 0.35 },
   scintille: { da: 'scintille-a', inizio: 10, durata: 3, entra: 0.08, esce: 1.6 },
   carta: { da: 'carta-b', inizio: 0.1, durata: 0.85, entra: 0.01, esce: 0.25 },
-  festa: { da: 'festa-b', inizio: 6, durata: 14, loop: 2, kbps: 48 },
+  // Scena 1: il tappeto luminoso sotto il biglietto. L'introduzione del brano, che finisce
+  // appena prima che entri la cassa (a 16 s).
+  luci: { da: 'luce-c', inizio: 0, durata: 15.8, entra: 0.2, esce: 2.5, stereo: true, musica: true, kbps: 40 },
   // Scena 3: il diagramma. Il sottofondo è un pizzicato a frasi di 5,333 s: quattro frasi,
   // tagliate sull'attacco, così il giro si richiude a tempo.
   tesi: { da: 'tesi-c', inizio: 0.03, durata: 21.333, loop: 0.05, musica: true, kbps: 32 },
