@@ -2,8 +2,10 @@
 //
 // Una tendina rossa cala sul bancone della scena 5 e il pennello ci scrive 尊敬.
 // Lei la scosta con il dito (o la tocca): un attimo di buio e silenzio, poi compare
-// il bancone apparecchiato per due e, uno per tap, quattro bigliettini: il regalo,
-// le due parole giapponesi, le parole di Nicola.
+// il bancone apparecchiato per due e, uno per tap, le due parole giapponesi.
+// Poi il regalo: la sala si fa buia, si accende un fascio di luce e ci scende una
+// busta con scritto "Il tuo regalo". Lei rompe il sigillo, il bigliettino esce e si
+// ingrandisce. Per ultime le parole di Nicola.
 
 import { LATO, OMAKASE, SONKEI } from './_kanji.js';
 import { creaPennello } from './_pennello.js';
@@ -20,6 +22,44 @@ const TEMPI = {
   primoBiglietto: 1700, // dal bancone al primo bigliettino
   penna: 750, // dal bigliettino al primo tratto del pennello
 };
+
+// Il momento del regalo, dal tap sul bigliettino di sonkei.
+const REGALO = {
+  preludio: 700, // nel buio compare "E adesso…"
+  faro: 1700, // si accende il fascio di luce
+  busta: 2300, // la busta scende nella luce
+  pronta: 3500, // la busta è posata: il sigillo respira, si può toccare
+  // dal tap sul sigillo:
+  lembo: 250, // il lembo si apre
+  esce: 800, // il bigliettino esce dalla busta
+  libero: 2000, // il bigliettino si ingrandisce, la busta scende e sparisce
+  attesa: 4900, // righe scritte: il prossimo tap porta le parole di Nicola
+};
+
+const SCINTILLE = 18;
+
+// La busta del regalo, vista davanti: la tasca, e il lembo chiuso con la punta in basso.
+const TASCA = `
+  <svg viewBox="0 0 68 52" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="scrigno-tasca" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8f1b1d"/><stop offset="1" stop-color="#5f1013"/>
+      </linearGradient>
+    </defs>
+    <path d="M0 0L34 30L68 0V52H0Z" fill="url(#scrigno-tasca)"/>
+    <path d="M0 52L33 27M68 52L35 27" stroke="rgba(0,0,0,.28)" stroke-width=".5" fill="none"/>
+    <rect x=".6" y=".6" width="66.8" height="50.8" fill="none" stroke="#d8b26a" stroke-width=".35" opacity=".7"/>
+  </svg>`;
+const LEMBO = `
+  <svg viewBox="0 0 68 31" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="scrigno-lembo" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#a42224"/><stop offset="1" stop-color="#7b1619"/>
+      </linearGradient>
+    </defs>
+    <path d="M0 0H68L34 30Z" fill="url(#scrigno-lembo)" stroke="rgba(0,0,0,.3)" stroke-width=".4"/>
+    <path d="M1.4 .6H66.6L34 29Z" fill="none" stroke="#d8b26a" stroke-width=".3" opacity=".7"/>
+  </svg>`;
 
 const FREGIO = `
   <svg viewBox="0 0 80 8" aria-hidden="true">
@@ -73,18 +113,56 @@ export default {
       fregio,
       crea('p', 'invito__locale', c.locale),
       crea('p', 'invito__citta', c.citta),
+      crea('p', 'invito__data', c.data),
     );
     const omakase = parola(1.5, c.omakase, 'invito__kanji--tre');
     const sonkei = parola(-1, c.sonkei, 'invito__kanji--due');
     const frase = crea('div', 'invito__frase');
     for (const riga of c.frase) frase.append(crea('p', '', riga));
     const parole = biglietto(1, frase, crea('p', 'invito__chiusa', c.chiusa), crea('p', 'invito__firma', c.firma));
+    regalo.classList.add('invito--regalo');
+    parole.classList.add('invito--parole');
 
-    const biglietti = [regalo, omakase.el, sonkei.el, parole];
+    // --- Il momento del regalo: buio, fascio di luce, busta con il sigillo ---
+    const velo = crea('div', 'regalo__velo');
+    const faro = crea('div', 'faro');
+    const cono = crea('div', 'faro__cono');
+    faro.append(cono, crea('div', 'faro__pozza'), crea('div', 'faro__lampo'));
+    for (let i = 0; i < 9; i++) {
+      const granello = crea('span', 'faro__polvere');
+      granello.style.cssText = `--x:${(38 + Math.random() * 24).toFixed(1)}cqw;--y:${(25 + Math.random() * 55).toFixed(1)};--d:${(Math.random() * -6).toFixed(2)}s`;
+      faro.append(granello);
+    }
+    const preludio = crea('p', 'regalo__preludio', c.preludio);
+
+    const retro = crea('div', 'scrigno scrigno__retro');
+    const tasca = crea('div', 'scrigno scrigno__tasca');
+    tasca.innerHTML = TASCA;
+    tasca.append(crea('span', 'scrigno__scritta', c.busta));
+    const lembo = crea('div', 'scrigno scrigno__lembo');
+    lembo.innerHTML = LEMBO;
+    const sigillo = crea('div', 'scrigno scrigno__sigillo');
+    sigillo.innerHTML = `
+      <div class="sigillo">
+        <div class="sigillo__meta sigillo__meta--sx"><span></span></div>
+        <div class="sigillo__meta sigillo__meta--dx"><span></span></div>
+      </div>`;
+    for (const lettera of sigillo.querySelectorAll('span')) lettera.textContent = ctx.content.biglietto.sigillo;
+    for (let i = 0; i < SCINTILLE; i++) {
+      const scintilla = crea('span', 'scintilla');
+      const angolo = (i / SCINTILLE) * Math.PI * 2 + Math.random() * 0.3;
+      const forza = 18 + Math.random() * 22;
+      scintilla.style.cssText = `--dx:${(Math.cos(angolo) * forza).toFixed(1)}cqw;--dy:${(Math.sin(angolo) * forza - 8).toFixed(1)}cqw;--d:${(Math.random() * 0.15).toFixed(2)}s`;
+      sigillo.append(scintilla);
+    }
+    const busta = [retro, tasca, lembo, sigillo];
+
+    // Prima le due parole, poi il regalo che le mette insieme, infine le parole di Nicola.
+    const biglietti = [omakase.el, sonkei.el, regalo, parole];
     const pennelli = [
-      null,
       creaPennello(omakase.tela, OMAKASE, { lato: LATO, orizzontale: true }),
       creaPennello(sonkei.tela, SONKEI, { lato: LATO, orizzontale: true }),
+      null,
       null,
     ];
 
@@ -122,10 +200,11 @@ export default {
       });
     }
 
-    el.append(tavola, ...(video ? [video] : []), ...biglietti, noren);
+    el.append(tavola, ...(video ? [video] : []), velo, faro, ...biglietti, ...busta, preludio, noren);
 
     const fermo = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // attesa → pronta (si può aprire) → aperta → biglietti (un tap = il prossimo) ⇄ occupata
+    // attesa → pronta (si può aprire) → aperta → biglietti (un tap = il prossimo) ⇄ occupata;
+    // prima del regalo: sigillo (un tap lo rompe)
     let stato = 'attesa';
     let indice = -1;
 
@@ -143,6 +222,53 @@ export default {
       ctx.after(pennello ? 2600 : 2000, () => {
         stato = 'biglietti';
         el.classList.add('is-attesa'); // il bigliettino respira: invita a toccare
+      });
+    }
+
+    // Dopo le due parole: buio, il fascio di luce, la busta che scende.
+    const iRegalo = biglietti.indexOf(regalo);
+    function preparaRegalo() {
+      stato = 'occupata';
+      el.classList.add('is-buio');
+      biglietti.slice(0, iRegalo).forEach((b) => b.classList.add('is-via'));
+      ctx.after(REGALO.preludio, () => el.classList.add('is-preludio'));
+      ctx.after(REGALO.faro, () => {
+        el.classList.add('is-faro');
+        ctx.audio.play('faro');
+      });
+      ctx.after(REGALO.busta, () => {
+        el.classList.add('is-busta');
+        el.classList.remove('is-preludio');
+      });
+      ctx.after(REGALO.pronta, () => {
+        regalo.classList.add('is-dentro'); // dietro la tasca: non si vede ancora
+        el.classList.add('is-sigillo');
+        stato = 'sigillo';
+      });
+    }
+
+    // Il sigillo si rompe, la luce lampeggia, il bigliettino esce e si ingrandisce.
+    function apriRegalo() {
+      stato = 'occupata';
+      ctx.audio.play('sigillo');
+      el.classList.remove('is-sigillo');
+      el.classList.add('is-rotta');
+      sigillo.classList.add('is-rotto');
+      ctx.after(REGALO.lembo, () => el.classList.add('is-lembo'));
+      ctx.after(REGALO.esce, () => {
+        ctx.audio.play('carta');
+        regalo.classList.add('is-fuori');
+      });
+      ctx.after(REGALO.libero, () => {
+        ctx.audio.play('regalo');
+        biglietti[iRegalo - 1]?.classList.remove('is-ultimo');
+        regalo.classList.add('is-libero', 'is-mostrato', 'is-ultimo');
+        el.classList.add('is-busta-via');
+        indice = iRegalo;
+      });
+      ctx.after(REGALO.attesa, () => {
+        stato = 'biglietti';
+        el.classList.add('is-attesa');
       });
     }
 
@@ -202,9 +328,14 @@ export default {
 
     ctx.onTap(el, () => {
       if (stato === 'pronta') apri();
+      else if (stato === 'sigillo') apriRegalo();
       else if (stato === 'biglietti') {
         el.classList.remove('is-attesa');
-        if (indice < biglietti.length - 1) mostra(indice + 1);
+        if (indice + 1 === iRegalo) preparaRegalo();
+        else if (indice < biglietti.length - 1) {
+          if (indice === iRegalo) el.classList.add('is-dopo-regalo'); // torna un po' di luce
+          mostra(indice + 1);
+        }
         else {
           stato = 'occupata';
           ctx.next();

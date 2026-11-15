@@ -45,6 +45,7 @@ export default {
       'Anni di esami, appunti e scadenze. Ha deciso, organizzato e chiuso tutto lei.',
       'Ha due grandi passioni. Nicola le conosce bene tutte e due.',
       'Non si indossa, non si legge, non si appende.',
+      'Vuole fare qualcosa nei giorni dopo Capodanno.',
     ],
     // Ai bivi qualunque scelta porta allo stesso esito.
     bivio1: {
@@ -105,11 +106,15 @@ export default {
     tessuto: 'assets/img/tessuto.webp', // la stoffa della tendina; null per quella disegnata
     tendaVideo: 'assets/video/tenda.mp4', // la tendina che si apre, girata con Flow; null per quella disegnata
 
-    // Primo bigliettino: il regalo.
+    // Il regalo: prima una busta chiusa nel buio, sotto un fascio di luce; rotto il
+    // sigillo esce il bigliettino.
+    preludio: 'E adesso…', // compare nel buio, prima che scenda la busta
+    busta: 'Il tuo regalo', // scritto sulla busta
     annuncio: 'Il tuo regalo',
     regalo: 'Cena omakase per due',
     locale: 'Sonkei Omakase',
     citta: 'Roncadelle',
+    data: '2 gennaio 2027',
 
     // Secondo e terzo: le due parole. I caratteri li scrive il pennello.
     omakase: {

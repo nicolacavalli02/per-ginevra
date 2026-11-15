@@ -1278,7 +1278,7 @@
 .bpmn-nota {
   position: absolute;
   left: 6cqw;
-  top: 170cqw;
+  top: 192cqw;
   width: 40cqw;
   margin: 0;
   padding-left: 2cqw;
@@ -2838,4 +2838,420 @@
 .rotolo-tela--gettone {
   left: -47cqw;
   top: -7cqw;
+}
+
+/* ---------- Ritocchi dopo la prova "con i suoi occhi" ---------- */
+
+/* Scena 5: mentre la polaroid è grande, l'invito a toccare è lei a respirare, non il piatto. */
+.is-foto-aperta .banco__invito {
+  animation: none !important;
+  opacity: 0;
+}
+
+.is-attesa.is-foto-aperta .ricordo.is-grande {
+  animation: ricordo-respiro 2.2s ease-in-out infinite;
+}
+
+@keyframes ricordo-respiro {
+  50% {
+    scale: 1.025;
+  }
+}
+
+/* Scena 1: quando il biglietto è scritto, respira appena: invita al secondo tocco. */
+.biglietto.is-pronta .busta .cartoncino {
+  animation: biglietto-respiro 2.6s ease-in-out 0.6s infinite;
+}
+
+@keyframes biglietto-respiro {
+  50% {
+    scale: 1.018;
+    filter: drop-shadow(0 0 3cqw rgba(255, 214, 150, 0.35));
+  }
+}
+
+/* Scena 6: la data sul bigliettino del regalo. */
+.invito__data {
+  margin-top: 4cqw;
+  color: var(--rosso);
+  font-size: 3.4cqw;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-attesa.is-foto-aperta .ricordo.is-grande,
+  .biglietto.is-pronta .busta .cartoncino {
+    animation: none;
+  }
+}
+
+/* ---------- Scena 6: il regalo in una busta, nel buio, sotto un fascio di luce ---------- */
+
+/* La busta è larga 68 e alta 52, con il bordo alto a metà schermo meno 14:
+   così il bigliettino che ne esce arriva esattamente dove si posano gli altri. */
+.rivelazione {
+  --scrigno-alto: calc(50cqh - 14cqw);
+}
+
+/* Il buio: scende sul bancone mentre i due bigliettini letti scivolano via. */
+.regalo__velo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse 70% 55% at 50% 58%, rgba(4, 3, 2, 0.72), rgba(4, 3, 2, 0.93));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.1s ease;
+}
+
+.is-buio .regalo__velo {
+  opacity: 1;
+}
+
+.is-dopo-regalo .regalo__velo {
+  opacity: 0.6;
+  transition-duration: 2s;
+}
+
+.rivelazione .invito.is-via {
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.5, 0, 0.75, 0.4), opacity 0.6s ease 0.25s;
+}
+
+.rivelazione .invito.is-via:nth-of-type(odd) {
+  transform: translateX(-95cqw) rotate(-14deg);
+}
+
+.rivelazione .invito.is-via:nth-of-type(even) {
+  transform: translateX(95cqw) rotate(12deg);
+}
+
+/* "E adesso…" nel buio, prima che arrivi la busta. */
+.regalo__preludio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50cqh - 46cqw);
+  z-index: 6;
+  margin: 0;
+  color: #e7c98d;
+  font: 400 13cqw / 1 "Pinyon Script", cursive;
+  text-align: center;
+  text-shadow: 0 0 4cqw rgba(231, 190, 110, 0.35);
+  opacity: 0;
+  transform: translateY(2cqw);
+  transition: opacity 1s ease, transform 1.4s ease;
+  pointer-events: none;
+}
+
+.is-preludio .regalo__preludio {
+  opacity: 1;
+  transform: none;
+}
+
+/* Il fascio di luce: un cono caldo che cade dall'alto sulla busta, con la sua pozza. */
+.faro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.is-faro .faro {
+  animation: faro-accende 0.7s steps(1, end) forwards;
+}
+
+.is-dopo-regalo .faro {
+  opacity: 0.6;
+  animation: none;
+  transition: opacity 2s ease;
+}
+
+/* Si accende con un paio di sfarfallii, come una lampada vera. */
+@keyframes faro-accende {
+  0% {
+    opacity: 0.5;
+  }
+  15% {
+    opacity: 0.05;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  42% {
+    opacity: 0.25;
+  }
+  55%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.faro__cono {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--scrigno-alto) + 56cqw);
+  filter: blur(2.5cqw);
+}
+
+.faro__cono::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 228, 175, 0.05) 0%, rgba(255, 222, 160, 0.3) 100%);
+  clip-path: polygon(43% 0, 57% 0, 92% 100%, 8% 100%);
+}
+
+.faro__pozza {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--scrigno-alto) + 50cqw);
+  width: 110cqw;
+  height: 30cqw;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgba(255, 220, 160, 0.38), rgba(255, 220, 160, 0));
+}
+
+/* Il lampo quando si rompe il sigillo. */
+.faro__lampo {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--scrigno-alto) + 30cqw);
+  width: 150cqw;
+  height: 150cqw;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgba(255, 240, 205, 0.85), rgba(255, 220, 160, 0.25) 45%, rgba(255, 220, 160, 0));
+  opacity: 0;
+}
+
+.is-rotta .faro__lampo {
+  animation: faro-lampo 1.3s ease-out forwards;
+}
+
+@keyframes faro-lampo {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Granelli di polvere che galleggiano nella luce. */
+.faro__polvere {
+  position: absolute;
+  left: var(--x);
+  top: calc((50cqh + 36cqw) * var(--y) / 100);
+  width: 0.7cqw;
+  height: 0.7cqw;
+  border-radius: 50%;
+  background: rgba(255, 236, 200, 0.9);
+  box-shadow: 0 0 1.2cqw rgba(255, 230, 180, 0.8);
+  animation: polvere 6s ease-in-out var(--d) infinite;
+}
+
+@keyframes polvere {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(2.5cqw, 7cqw);
+  }
+}
+
+/* --- La busta: retro, tasca e lembo sono pezzi separati, così il bigliettino può
+   stare in mezzo (davanti al retro, dietro la tasca). Si muovono tutti insieme. --- */
+.scrigno {
+  position: absolute;
+  left: 16cqw;
+  top: var(--scrigno-alto);
+  width: 68cqw;
+  height: 52cqw;
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--scrigno-alto) - 70cqw));
+  pointer-events: none;
+}
+
+.is-busta .scrigno {
+  opacity: 1;
+  transform: none;
+  transition: transform 1.2s cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.is-busta-via .scrigno {
+  opacity: 0;
+  transform: translateY(40cqw);
+  transition: transform 1s cubic-bezier(0.5, 0, 0.8, 0.5), opacity 0.6s ease 0.35s;
+}
+
+.scrigno svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scrigno__retro {
+  z-index: 2;
+  border-radius: 0.6cqw;
+  background: linear-gradient(180deg, #3e0a0c, #5a1013);
+  box-shadow: 0 3cqw 6cqw rgba(0, 0, 0, 0.55);
+}
+
+.scrigno__tasca {
+  z-index: 4;
+}
+
+.scrigno__scritta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40.5cqw;
+  color: #e3c27f;
+  font: 400 8.5cqw / 1 "Pinyon Script", cursive;
+  text-align: center;
+  text-shadow: 0 0.3cqw 0.5cqw rgba(0, 0, 0, 0.35);
+}
+
+/* Il lembo, chiuso con la punta in basso. Aprendosi ruota verso l'alto e a metà
+   strada passa dietro: il bigliettino uscirà davanti a lui. */
+.scrigno.scrigno__lembo {
+  z-index: 4;
+  height: 31cqw;
+  transform-origin: 50% 0;
+  transform: translateY(calc(-1 * var(--scrigno-alto) - 70cqw)) perspective(120cqw) rotateX(0deg);
+}
+
+.is-busta .scrigno__lembo {
+  transform: translateY(0) perspective(120cqw) rotateX(0deg);
+}
+
+.is-busta.is-lembo .scrigno__lembo {
+  z-index: 2;
+  transform: translateY(0) perspective(120cqw) rotateX(180deg);
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.3, 1), z-index 0s linear 0.27s;
+}
+
+.is-lembo .scrigno__lembo svg {
+  filter: brightness(0.6);
+  transition: filter 0.55s ease;
+}
+
+.is-busta-via.is-lembo .scrigno__lembo {
+  opacity: 0;
+  transform: translateY(40cqw) perspective(120cqw) rotateX(180deg);
+  transition: transform 1s cubic-bezier(0.5, 0, 0.8, 0.5), opacity 0.6s ease 0.35s;
+}
+
+/* Il sigillo dorato sulla punta del lembo. È quello della scena 1, in oro. */
+.scrigno.scrigno__sigillo {
+  --ceralacca: #c79a45;
+  --ceralacca-scura: #7a5418;
+  --ceralacca-luce: #f4dc9c;
+  z-index: 5;
+  left: 50cqw;
+  top: calc(var(--scrigno-alto) + 30cqw);
+  width: 0;
+  height: 0;
+}
+
+.scrigno__sigillo .sigillo {
+  animation: none;
+}
+
+.scrigno__sigillo .sigillo::after {
+  animation: none;
+  border-color: rgba(255, 225, 160, 0.8);
+}
+
+.is-sigillo .scrigno__sigillo .sigillo {
+  animation: sigillo-respiro 2s ease-in-out infinite;
+}
+
+.is-sigillo .scrigno__sigillo .sigillo::after {
+  animation: sigillo-onda 2s ease-out infinite;
+}
+
+/* Scintille dorate che schizzano via quando il sigillo si rompe. */
+.scintilla {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.1cqw;
+  height: 1.1cqw;
+  margin: -0.55cqw;
+  border-radius: 50%;
+  background: #fff1c9;
+  box-shadow: 0 0 1.6cqw 0.4cqw rgba(255, 205, 120, 0.9);
+  opacity: 0;
+}
+
+.is-rotto .scintilla {
+  animation: scintilla 1.1s cubic-bezier(0.15, 0.7, 0.35, 1) var(--d) forwards;
+}
+
+@keyframes scintilla {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + 10cqw)) scale(0.3);
+  }
+}
+
+/* --- Il bigliettino del regalo: aspetta nella busta, esce, poi si ingrandisce --- */
+.rivelazione .invito--regalo.is-dentro {
+  z-index: 3;
+  opacity: 1;
+  transform: translateY(55.3cqw) scale(0.5);
+  transition: none;
+}
+
+.rivelazione .invito--regalo.is-fuori {
+  transform: translateY(0) scale(0.5);
+  transition: transform 1.1s cubic-bezier(0.25, 0.7, 0.3, 1);
+}
+
+.rivelazione .invito--regalo.is-libero {
+  z-index: 7;
+  transform: rotate(var(--storto));
+  box-shadow: 0 2cqw 7cqw rgba(0, 0, 0, 0.6), 0 0 12cqw rgba(255, 214, 140, 0.4);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 1.2s ease;
+}
+
+.rivelazione .invito--parole {
+  z-index: 8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-faro .faro {
+    animation: none;
+    opacity: 1;
+  }
+
+  .faro__polvere,
+  .is-sigillo .scrigno__sigillo .sigillo,
+  .is-sigillo .scrigno__sigillo .sigillo::after,
+  .is-rotto .scintilla {
+    animation: none;
+  }
 }

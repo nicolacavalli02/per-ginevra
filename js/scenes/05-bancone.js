@@ -28,6 +28,7 @@ const TEMPI = {
   servito: 700, // quanto ci mette un pezzo ad arrivare sul piatto
   sviluppo: 1500, // quanto ci mette la foto a comparire
   riposta: 500,
+  lettura: 4500, // quanto resta grande una polaroid prima di mettersi via da sola
   fine: 1300, // dall'ultimo ricordo messo via al cambio scena
 };
 
@@ -147,10 +148,18 @@ export default {
       ctx.audio.play('carta');
       pezzi[i].classList.add('is-mangiato');
       ricordi[i].classList.add('is-grande');
+      // Mentre si guarda la foto l'invito a toccare passa dal piatto alla polaroid.
+      el.classList.add('is-foto-aperta');
       libera(TEMPI.sviluppo);
+      // Se lei non tocca, dopo qualche secondo la polaroid si mette via da sola.
+      const passoRiponi = 2 * i + 1;
+      ctx.after(TEMPI.sviluppo + TEMPI.lettura, () => {
+        if (passo === passoRiponi && !occupato) avanza();
+      });
     }
 
     function riponi(i) {
+      el.classList.remove('is-foto-aperta');
       ricordi[i].classList.remove('is-grande');
       ricordi[i].classList.add('is-riposta');
     }
@@ -166,12 +175,13 @@ export default {
     });
 
     let passo = 0;
-    ctx.onTap(el, () => {
+    function avanza() {
       if (occupato || passo >= passi.length) return;
       occupato = true;
       el.classList.remove('is-attesa');
       passi[passo++]();
-    });
+    }
+    ctx.onTap(el, avanza);
 
     ctx.after(TEMPI.servizio, () => el.classList.add('is-servizio'));
     ctx.after(TEMPI.primoPezzo, () => servi(0));

@@ -18,29 +18,29 @@ const FERMATA = 4.5; // il gettone si ferma poco prima della punta della freccia
 const NODI = {
   inizio: [27, 26],
   raccolta: [73, 48],
-  bivio1: [27, 141],
-  esito1: [73, 165],
-  bivio2: [73, 191],
-  esito2: [27, 213],
-  fine: [50, 245],
+  bivio1: [27, 163],
+  esito1: [73, 187],
+  bivio2: [73, 213],
+  esito2: [27, 235],
+  fine: [50, 267],
 };
 
 // Frecce: tracciato, punta [direzione, x, y], nodo di arrivo.
 const FLUSSI = {
   f1: { d: 'M27 30.2V48H54', punta: ['dx', 54, 48], verso: 'raccolta' },
-  f2: { d: 'M82 55.5V127H27V135.5', punta: ['giu', 27, 135.5], verso: 'bivio1' },
-  f1a: { d: 'M27 146.5V165H54', punta: ['dx', 54, 165], verso: 'esito1' },
-  f1b: { d: 'M32.5 141H73V157.5', punta: ['giu', 73, 157.5], verso: 'esito1' },
-  f3: { d: 'M73 172.5V185.5', punta: ['giu', 73, 185.5], verso: 'bivio2' },
-  f2a: { d: 'M67.5 191H27V205.5', punta: ['giu', 27, 205.5], verso: 'esito2' },
-  f2b: { d: 'M73 196.5V213H46', punta: ['sx', 46, 213], verso: 'esito2' },
-  f4: { d: 'M27 220.5V229H50V236.5', punta: ['giu', 50, 236.5], verso: 'fine' },
+  f2: { d: 'M82 55.5V149H27V157.5', punta: ['giu', 27, 157.5], verso: 'bivio1' },
+  f1a: { d: 'M27 168.5V187H54', punta: ['dx', 54, 187], verso: 'esito1' },
+  f1b: { d: 'M32.5 163H73V179.5', punta: ['giu', 73, 179.5], verso: 'esito1' },
+  f3: { d: 'M73 194.5V207.5', punta: ['giu', 73, 207.5], verso: 'bivio2' },
+  f2a: { d: 'M67.5 213H27V227.5', punta: ['giu', 27, 227.5], verso: 'esito2' },
+  f2b: { d: 'M73 218.5V235H46', punta: ['sx', 46, 235], verso: 'esito2' },
+  f4: { d: 'M27 242.5V251H50V258.5', punta: ['giu', 50, 258.5], verso: 'fine' },
 };
 
 // Dove guarda la "telecamera" a ogni tappa (altezza del mondo da tenere in vista).
-const FUOCO = { insight: 84, bivio1: 143, esito1: 165, bivio2: 191, esito2: 213 };
+const FUOCO = { insight: 95, bivio1: 165, esito1: 187, bivio2: 213, esito2: 235 };
 
-const INSIGHT_Y = [58, 80, 102]; // bordo alto delle tre schede; sono alte 20
+const INSIGHT_Y = [58, 80, 102, 124]; // bordo alto delle schede degli indizi; sono alte 20
 const n = (x) => +x.toFixed(2);
 const morbido = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
@@ -103,7 +103,7 @@ export default {
     svg.setAttribute('viewBox', '0 0 100 320');
     svg.setAttribute('aria-hidden', 'true');
     svg.innerHTML =
-      `<path class="bpmn-associazione" d="M64 55.5V112${INSIGHT_Y.map((y) => `M48 ${y + 10}H64`).join('')}"/>` +
+      `<path class="bpmn-associazione" d="M64 55.5V${INSIGHT_Y[INSIGHT_Y.length - 1] + 10}${INSIGHT_Y.map((y) => `M48 ${y + 10}H64`).join('')}"/>` +
       Object.entries(FLUSSI)
         .map(([id, f]) => `<g class="bpmn-flusso" data-id="${id}"><path class="bpmn-flusso__linea" d="${f.d}"/><path class="bpmn-flusso__punta" d="${punta(f.punta)}"/></g>`)
         .join('');
@@ -128,13 +128,13 @@ export default {
     });
 
     const nota = crea('p', 'bpmn-nota', c.bivio1.nota);
-    const domanda1 = etichetta(c.bivio1.domanda, 'left:35cqw;top:131.5cqw;translate:0 -50%');
-    const domanda2 = etichetta(c.bivio2.domanda, 'right:31cqw;top:179.5cqw;translate:0 -50%');
+    const domanda1 = etichetta(c.bivio1.domanda, 'left:35cqw;top:153.5cqw;translate:0 -50%');
+    const domanda2 = etichetta(c.bivio2.domanda, 'right:31cqw;top:201.5cqw;translate:0 -50%');
 
     // I due bivi: [flusso, x, y] per ogni scelta, nell'ordine dei testi.
     const bivi = [
-      { dati: c.bivio1, fuoco: FUOCO.esito1, esito: nodi.esito1, scelte: [['f1a', 27, 154], ['f1b', 52, 141]] },
-      { dati: c.bivio2, fuoco: FUOCO.esito2, esito: nodi.esito2, scelte: [['f2a', 48, 191], ['f2b', 73, 205]] },
+      { dati: c.bivio1, fuoco: FUOCO.esito1, esito: nodi.esito1, scelte: [['f1a', 27, 176], ['f1b', 52, 163]] },
+      { dati: c.bivio2, fuoco: FUOCO.esito2, esito: nodi.esito2, scelte: [['f2a', 48, 213], ['f2b', 73, 227]] },
     ];
     for (const bivio of bivi) {
       bivio.pulsanti = bivio.scelte.map(([flusso, x, y], i) => {
@@ -293,8 +293,8 @@ export default {
         telecamera(FUOCO.insight);
         viaggia('f1', () => rivela(0));
       },
-      () => rivela(1),
-      () => rivela(2),
+      // Gli altri indizi, uno per tap.
+      ...insight.slice(1).map((_, i) => () => rivela(i + 1)),
       () => {
         telecamera(FUOCO.bivio1);
         viaggia('f2', () => apriBivio(bivi[0]));

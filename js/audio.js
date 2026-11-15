@@ -61,6 +61,18 @@ const SUONI = {
   rivelazione: (c, u) => {
     for (const freq of [261.6, 329.6, 392, 523.3]) nota(c, u, { freq, picco: 0.07, attacco: 0.7, coda: 4 });
   },
+  // Il fascio di luce che si accende: un colpo basso e un ronzio che resta.
+  faro: (c, u) => {
+    nota(c, u, { freq: 70, picco: 0.3, coda: 0.25 });
+    rumore(c, u, { filtro: 'lowpass', freq: 400, picco: 0.08, attacco: 0.3, coda: 1.6 });
+  },
+  // Il bigliettino del regalo che esce dalla busta: un arpeggio che sale e un accordo pieno.
+  regalo: (c, u) => {
+    [523.3, 659.3, 784, 1046.5, 1318.5].forEach((freq, i) => {
+      setTimeout(() => nota(c, u, { freq, picco: 0.09, coda: 1.6 }), i * 90);
+    });
+    for (const freq of [261.6, 329.6, 392, 523.3, 659.3]) nota(c, u, { freq, picco: 0.06, attacco: 0.5, coda: 5 });
+  },
 };
 
 export function createAudio(pulsante) {
