@@ -34,6 +34,7 @@ const TEMPI = {
 
 export default {
   taglio: true,
+  ambiente: 'sala',
 
   mount(el, ctx) {
     const c = ctx.content;

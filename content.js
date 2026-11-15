@@ -140,4 +140,33 @@ export default {
     prima: 'Il resto te lo dico a voce.',
     poi: 'Alza gli occhi.',
   },
+
+  // I suoni: un file per nome, in assets/audio/. Con null suona il segnaposto
+  // sintetizzato in js/audio.js (per gli effetti) o niente (per ambienti e musica).
+  suoni: {
+    // Effetti
+    sigillo: null, // ceralacca che si spezza (scene 1 e 6)
+    coriandoli: null, // scoppio leggero di coriandoli
+    scintille: null, // sfrigolio delle fontane, scintille del sigillo
+    carta: null, // carta che scivola, polaroid, bigliettini
+    arrotola: null, // il biglietto che si arrotola
+    nastro: null, // il fiocco del nastro
+    ding: null, // ogni indizio del diagramma
+    click: null, // tap e scelte ai bivi
+    errore: null, // "No, non ha capito", "Indizi esauriti"
+    chime: null, // "Continuous Improvement"
+    pennello: null, // il pennello che scrive i caratteri
+    campanella: null, // la lanterna che si accende
+    coltello: null, // il pezzo servito sul tagliere
+    piatto: null, // il pezzo posato sul piatto di ceramica
+    scatto: null, // la polaroid
+    tendina: null, // la stoffa della tendina
+    faro: null, // l'interruttore del fascio di luce
+    soffio: null, // la busta che scende
+    // Ambienti, in loop
+    festa: null, // scene 1-2: brusio lontano e calici
+    sala: null, // scene 4-6: brusio di ristorante
+    // Musica, dal regalo alla fine
+    finale: null,
+  },
 };

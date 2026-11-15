@@ -93,6 +93,7 @@ function parola(storto, voce, classe) {
 
 export default {
   sopra: true,
+  ambiente: 'sala',
 
   mount(el, ctx) {
     const c = ctx.content.reveal;

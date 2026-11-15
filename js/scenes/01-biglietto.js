@@ -82,6 +82,8 @@ const BUSTA = `
   </div>`;
 
 export default {
+  ambiente: 'festa',
+
   mount(el, ctx) {
     const biglietto = ctx.content.biglietto;
 

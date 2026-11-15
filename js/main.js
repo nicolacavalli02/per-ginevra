@@ -14,7 +14,13 @@ const scenes = [biglietto, pergamena, bpmn, kaizen, bancone, noren, finale];
 
 document.title = content.titoloPagina;
 
-const audio = createAudio(document.getElementById('mute'));
+const parametri = new URLSearchParams(location.search);
+
+// ?audio=log scrive in console ogni suono con il suo istante.
+const audio = createAudio(document.getElementById('mute'), {
+  suoni: content.suoni,
+  log: parametri.get('audio') === 'log',
+});
 const engine = createEngine({
   stage: document.getElementById('stage'),
   scenes,
@@ -23,5 +29,5 @@ const engine = createEngine({
 });
 
 // ?scene=N salta alla scena N (da 1 a 7) durante i test.
-const richiesta = parseInt(new URLSearchParams(location.search).get('scene'), 10);
+const richiesta = parseInt(parametri.get('scene'), 10);
 engine.go(Number.isFinite(richiesta) ? richiesta - 1 : 0);

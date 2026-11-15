@@ -1,5 +1,6 @@
 // Audio: si sblocca al primo tap, il pulsante mute è sempre attivo.
-// I suoni sono per ora segnaposto sintetizzati via codice (nessun file).
+// Effetti, tappeti d'ambiente e musica sono file (elencati in content.js, sezione suoni);
+// dove un file manca suonano i segnaposto sintetizzati qui sotto.
 
 function inviluppo(ctx, uscita, { picco = 0.25, attacco = 0.005, coda = 0.2 }) {
   const g = ctx.createGain();
@@ -75,35 +76,142 @@ const SUONI = {
   },
 };
 
-export function createAudio(pulsante) {
-  let ctx = null;
-  let master = null;
+// Volume di ogni canale sotto il master: da regolare a orecchio nel mix finale.
+const VOLUMI = { effetti: 0.9, ambiente: 0.35, musica: 0.8 };
+
+// createAudio(pulsante, { suoni, log })
+//   suoni: { nome: 'assets/audio/…' | null } da content.js. Senza file (o finché non è
+//          pronto) un effetto suona il segnaposto sintetizzato qui sopra.
+//   log:   con ?audio=log la console scrive ogni suono con il suo istante.
+//
+// play(nome, { volume, variazione })  un effetto
+// ambiente(nome | null, { dissolvenza })  il tappeto in loop della scena
+// musica(nome | null, { attacco, dissolvenza })  la traccia finale, una volta sola
+// vibra(schema)  navigator.vibrate, se c'è e se l'audio non è muto
+export function createAudio(pulsante, { suoni = {}, log = false } = {}) {
+  const Contesto = window.AudioContext || window.webkitAudioContext;
   let muto = false;
+  let sbloccato = false;
+  const inizio = performance.now();
+
+  // Il contesto nasce subito, sospeso: così i file si decodificano mentre la pagina
+  // carica, e al primo tap (il sigillo) il primo suono è già pronto.
+  const ctx = Contesto ? new Contesto() : null;
+  const master = ctx?.createGain();
+  const canali = {};
+  if (ctx) {
+    master.connect(ctx.destination);
+    for (const [nome, volume] of Object.entries(VOLUMI)) {
+      canali[nome] = ctx.createGain();
+      canali[nome].gain.value = volume;
+      canali[nome].connect(master);
+    }
+  }
+
+  const scrivi = (...cosa) => {
+    if (log) console.info(`[audio] ${((performance.now() - inizio) / 1000).toFixed(2)}s`, ...cosa);
+  };
+
+  // --- I file: scaricati e decodificati subito, uno per nome ---
+  const buffer = new Map();
+  if (ctx) {
+    for (const [nome, src] of Object.entries(suoni)) {
+      if (!src) continue;
+      fetch(src)
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.arrayBuffer();
+        })
+        .then((dati) => ctx.decodeAudioData(dati))
+        .then((b) => {
+          buffer.set(nome, b);
+          aggiornaAmbiente(); // se era il tappeto atteso, ora può partire
+        })
+        .catch((errore) => scrivi('file non caricato:', nome, src, errore.message));
+    }
+  }
+
+  // Una sorgente che suona un buffer su un canale, con il suo volume.
+  function sorgente(b, canale, { volume = 1, loop = false, velocita = 1 } = {}) {
+    const s = ctx.createBufferSource();
+    s.buffer = b;
+    s.loop = loop;
+    s.playbackRate.value = velocita;
+    const g = ctx.createGain();
+    g.gain.value = volume;
+    s.connect(g).connect(canale);
+    return { s, g };
+  }
+
+  // Sfuma un suono a zero in `secondi` e poi lo ferma.
+  function sfuma(suono, secondi) {
+    if (!suono) return;
+    const t = ctx.currentTime;
+    suono.g.gain.cancelScheduledValues(t);
+    suono.g.gain.setValueAtTime(suono.g.gain.value, t);
+    suono.g.gain.linearRampToValueAtTime(0, t + secondi);
+    suono.s.stop(t + secondi + 0.05);
+  }
+
+  // Lo fa entrare da zero in `secondi`.
+  function entra(suono, secondi, volume = 1) {
+    const t = ctx.currentTime;
+    suono.g.gain.setValueAtTime(0, t);
+    suono.g.gain.linearRampToValueAtTime(volume, t + Math.max(0.01, secondi));
+    suono.s.start();
+  }
+
+  // --- Il tappeto della scena: si può chiedere prima dello sblocco o prima che il
+  //     file sia pronto; parte appena può ---
+  let ambienteVoluto = null;
+  let ambienteDissolvenza = 1.5;
+  let ambienteInCorso = null; // { nome, s, g }
+
+  function aggiornaAmbiente() {
+    if (!ctx || !sbloccato) return;
+    if ((ambienteInCorso?.nome ?? null) === ambienteVoluto) return;
+    const b = ambienteVoluto && buffer.get(ambienteVoluto);
+    if (ambienteVoluto && !b) return; // il file non è ancora pronto: si riprova quando arriva
+    sfuma(ambienteInCorso, ambienteDissolvenza);
+    ambienteInCorso = null;
+    if (b) {
+      ambienteInCorso = { nome: ambienteVoluto, ...sorgente(b, canali.ambiente, { loop: true }) };
+      entra(ambienteInCorso, ambienteDissolvenza);
+      scrivi('ambiente', ambienteVoluto);
+    } else {
+      scrivi('ambiente spento');
+    }
+  }
+
+  // --- La musica: una traccia, una volta sola, che finisce da sé ---
+  let musicaInCorso = null;
 
   function sblocca() {
-    if (!ctx) {
-      ctx = new AudioContext();
-      master = ctx.createGain();
-      master.gain.value = muto ? 0 : 1;
-      master.connect(ctx.destination);
+    if (!ctx) return;
+    if (ctx.state !== 'running' && !document.hidden) ctx.resume();
+    if (!sbloccato) {
+      sbloccato = true;
+      scrivi('sbloccato');
+      aggiornaAmbiente();
     }
-    if (ctx.state === 'suspended' && !document.hidden) ctx.resume();
   }
 
   function setMuto(valore) {
     muto = valore;
     if (master) master.gain.setTargetAtTime(muto ? 0 : 1, ctx.currentTime, 0.02);
+    if (muto) navigator.vibrate?.(0);
     pulsante.classList.toggle('is-muted', muto);
     pulsante.setAttribute('aria-pressed', String(muto));
     pulsante.setAttribute('aria-label', muto ? 'Attiva audio' : 'Disattiva audio');
   }
 
-  // Il browser permette l'audio solo dopo un gesto: qualsiasi primo tocco lo sblocca.
+  // Il browser permette l'audio solo dopo un gesto. Ogni tocco riprova a far ripartire
+  // il contesto: serve anche se il sistema lo ha interrotto (una chiamata, un allarme).
   window.addEventListener('pointerdown', sblocca, { capture: true });
   window.addEventListener('keydown', sblocca, { capture: true });
 
   document.addEventListener('visibilitychange', () => {
-    if (!ctx) return;
+    if (!ctx || !sbloccato) return;
     if (document.hidden) ctx.suspend();
     else ctx.resume();
   });
@@ -112,16 +220,68 @@ export function createAudio(pulsante) {
 
   return {
     // Prima dello sblocco non suona nulla, senza errori.
-    play(nome) {
-      if (!ctx) return;
-      SUONI[nome]?.(ctx, master);
+    play(nome, { volume = 1, variazione = 0 } = {}) {
+      if (!ctx || !sbloccato) return;
+      const b = buffer.get(nome);
+      if (b) {
+        // Una piccola variazione di tono e volume: i suoni ripetuti non sembrano tutti uguali.
+        const caso = () => Math.random() * 2 - 1;
+        const { s } = sorgente(b, canali.effetti, {
+          volume: volume * (1 - Math.abs(caso()) * variazione),
+          velocita: 1 + caso() * variazione * 0.5,
+        });
+        s.start();
+        scrivi('effetto', nome);
+      } else if (SUONI[nome]) {
+        SUONI[nome](ctx, canali.effetti);
+        scrivi('effetto', nome, '(segnaposto)');
+      } else {
+        scrivi('effetto', nome, '(nessun suono)');
+      }
     },
+
+    ambiente(nome, { dissolvenza = 1.5 } = {}) {
+      ambienteVoluto = nome || null;
+      ambienteDissolvenza = dissolvenza;
+      aggiornaAmbiente();
+    },
+
+    musica(nome, { attacco = 2, dissolvenza = 3 } = {}) {
+      if (!ctx || !sbloccato) return;
+      if (!nome) {
+        sfuma(musicaInCorso, dissolvenza);
+        musicaInCorso = null;
+        scrivi('musica spenta');
+        return;
+      }
+      if (musicaInCorso?.nome === nome) return;
+      const b = buffer.get(nome);
+      if (!b) {
+        scrivi('musica', nome, '(file non pronto)');
+        return;
+      }
+      sfuma(musicaInCorso, dissolvenza);
+      musicaInCorso = { nome, ...sorgente(b, canali.musica) };
+      entra(musicaInCorso, attacco);
+      scrivi('musica', nome);
+    },
+
+    vibra(schema) {
+      if (muto || !sbloccato) return;
+      try {
+        navigator.vibrate?.(schema);
+      } catch {
+        // Nessuna vibrazione: va bene così.
+      }
+      scrivi('vibra', schema);
+    },
+
     setMuto,
     get muto() {
       return muto;
     },
     get sbloccato() {
-      return ctx !== null;
+      return sbloccato;
     },
   };
 }

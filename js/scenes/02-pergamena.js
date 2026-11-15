@@ -25,6 +25,7 @@ const morbido = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 
 
 export default {
   taglio: true,
+  ambiente: 'festa',
 
   mount(el, ctx) {
     el.classList.add('biglietto', 'pergamena', 'is-scritta', 'arrotola');

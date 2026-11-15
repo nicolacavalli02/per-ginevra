@@ -22,6 +22,7 @@ const TEMPI = {
 
 export default {
   sopra: true,
+  ambiente: null, // la sala entra quando si accende la lanterna
 
   mount(el, ctx) {
     // "biglietto" e "processo" servono solo per i colori e la grana della pergamena.

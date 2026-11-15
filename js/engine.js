@@ -1,6 +1,7 @@
 // Gestore delle scene: ne monta una alla volta e ripulisce quella precedente.
 //
-// Una scena è un oggetto { mount(el, ctx), taglio?, sopra? }. mount può restituire una funzione di pulizia.
+// Una scena è un oggetto { mount(el, ctx), taglio?, sopra?, ambiente? }. mount può restituire una funzione di pulizia.
+// ambiente è il nome del tappeto sonoro della scena (in content.suoni), o null per il silenzio.
 // ctx offre:
 //   next()               passa alla scena successiva (vale una volta sola)
 //   sotto, togliSotto()  le scene rimaste sotto una scena "sopra", e come toglierle
@@ -81,6 +82,9 @@ export function createEngine({ stage, scenes, audio, content }) {
       onTap: (bersaglio, fn) => registra(onTap(bersaglio, fn)),
       onSwipe: (bersaglio, opzioni) => registra(onSwipe(bersaglio, opzioni)),
     };
+
+    // Il tappeto d'ambiente della scena (se lo dichiara: null lo spegne, assente lo lascia com'è).
+    if ('ambiente' in scenes[i]) audio.ambiente(scenes[i].ambiente);
 
     const fine = scenes[i].mount(el, ctx);
     if (typeof fine === 'function') pulizie.push(fine);
