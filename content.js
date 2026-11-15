@@ -49,13 +49,13 @@ export default {
     // Ai bivi qualunque scelta porta allo stesso esito.
     bivio1: {
       domanda: 'Ha già capito cos’è?',
-      scelte: ['Sì', 'Ho un sospetto'],
+      scelte: ['Sì', 'Ha un sospetto'],
       esito: 'No, non ha capito',
       nota: 'Tutte le strade portano qui.',
     },
     bivio2: {
-      domanda: 'Vuoi un altro indizio?',
-      scelte: ['Sì', 'Dimmi subito il regalo'],
+      domanda: 'Vuole un altro indizio?',
+      scelte: ['Sì', 'Vuole subito il regalo'],
       esito: 'Indizi esauriti',
     },
     fine: 'Continuous Improvement',
