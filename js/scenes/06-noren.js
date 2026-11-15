@@ -27,8 +27,9 @@ const TEMPI = {
 const REGALO = {
   preludio: 700, // nel buio compare "E adesso…"
   faro: 1700, // si accende il fascio di luce
-  busta: 2300, // la busta scende nella luce
-  pronta: 3500, // la busta è posata: il sigillo respira, si può toccare
+  preludioVia: 2300, // "E adesso…" sparisce (in 0,45 s) prima che arrivi la busta
+  busta: 2800, // la busta scende nella luce
+  pronta: 4000, // la busta è posata: il sigillo respira, si può toccare
   // dal tap sul sigillo:
   lembo: 250, // il lembo si apre
   esce: 800, // il bigliettino esce dalla busta
@@ -241,10 +242,10 @@ export default {
         ctx.audio.play('faro');
         ctx.audio.vibra(25);
       });
+      ctx.after(REGALO.preludioVia, () => el.classList.remove('is-preludio'));
       ctx.after(REGALO.busta, () => {
         ctx.audio.play('soffio'); // la busta scende nella luce
         el.classList.add('is-busta');
-        el.classList.remove('is-preludio');
       });
       ctx.after(REGALO.pronta, () => {
         regalo.classList.add('is-dentro'); // dietro la tasca: non si vede ancora

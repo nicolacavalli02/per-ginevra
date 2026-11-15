@@ -21,6 +21,7 @@ const TYPES = {
   '.mp3': 'audio/mpeg',
   '.mp4': 'video/mp4',
   '.m4a': 'audio/mp4',
+  '.webmanifest': 'application/manifest+json',
   '.ogg': 'audio/ogg',
   '.woff2': 'font/woff2',
 };

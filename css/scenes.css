@@ -2942,13 +2942,14 @@
   text-shadow: 0 0 4cqw rgba(231, 190, 110, 0.35);
   opacity: 0;
   transform: translateY(2cqw);
-  transition: opacity 1s ease, transform 1.4s ease;
+  transition: opacity 0.45s ease, transform 0.45s ease; /* se ne va svelta, prima della busta */
   pointer-events: none;
 }
 
 .is-preludio .regalo__preludio {
   opacity: 1;
   transform: none;
+  transition: opacity 1s ease, transform 1.4s ease; /* arriva piano */
 }
 
 /* Il fascio di luce: un cono caldo che cade dall'alto sulla busta, con la sua pozza. */

@@ -12,16 +12,24 @@ const ATTESA_MASSIMA = 600; // ms: oltre, si va avanti comunque
 
 let iniziato = false;
 
+// Aperta come app installata (schermo intero dal manifest) non serve: è già senza barre.
+const giaApp = () => matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+
 const voluto = () =>
+  !giaApp() &&
   !!document.documentElement.requestFullscreen &&
   matchMedia('(pointer: coarse)').matches &&
   new URLSearchParams(location.search).get('schermo') !== '0';
 
 const attivo = () => !!document.fullscreenElement;
 
+// Chiede lo schermo intero e, appena c'è, blocca il telefono in verticale
+// (Chrome permette il blocco solo a schermo intero).
 function chiedi() {
   try {
-    return Promise.resolve(document.documentElement.requestFullscreen({ navigationUI: 'hide' }));
+    return Promise.resolve(document.documentElement.requestFullscreen({ navigationUI: 'hide' })).then(() => {
+      screen.orientation?.lock?.('portrait').catch(() => {});
+    });
   } catch (errore) {
     return Promise.reject(errore);
   }

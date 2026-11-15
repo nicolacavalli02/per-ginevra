@@ -1,6 +1,7 @@
 import content from '../content.js';
 import { createAudio } from './audio.js';
 import { createEngine } from './engine.js';
+import './telefono.js'; // schermo acceso, indietro, niente menu sulle foto
 
 import biglietto from './scenes/01-biglietto.js';
 import pergamena from './scenes/02-pergamena.js';

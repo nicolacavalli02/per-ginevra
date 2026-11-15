@@ -10,7 +10,7 @@ Viene consegnata di persona alla festa di laurea del 20 novembre 2026: lei la ap
 - Mobile-first, in verticale, ma deve funzionare anche su desktop. Tap e swipe devono funzionare anche col mouse.
 - L'audio parte dopo il primo tap. Niente pulsante mute in pagina (deciso il 15/11/2026): un tocco per sbaglio spegnerebbe tutto; il volume si regola con i tasti del telefono.
 - Deve girare bene su Android (Chrome), l'unico telefono di riferimento. iPhone/Safari non è un requisito.
-- Leggera (meno di 5 MB), con `noindex` e nessun tracciamento.
+- Leggera: circa 5 MB per quello che si carica durante la visione, come riferimento e non come limite rigido (deciso il 15/11/2026; non si sacrifica qualità per pochi KB, e le icone dell'app non contano). Con `noindex` e nessun tracciamento.
 - Il parametro `?scene=N` salta alla scena N durante i test.
 - Testi, foto e didascalie stanno in un unico file di contenuti (`content.js`), separato dal codice.
 - I font (Pinyon Script, Bodoni Moda) sono incorporati in `assets/fonts/`: nessuna richiesta a siti esterni.
