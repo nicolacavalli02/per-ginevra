@@ -2810,3 +2810,32 @@
 .con-tenda .noren__kanji {
   top: calc(100cqw * 16 / 9 * 0.4 - 1.4cqw);
 }
+
+/* ---------- Pergamena: il biglietto arrotolato, disegnato su canvas ---------- */
+
+/* Il canvas copre il biglietto (80 × 112 cqw) più 7 cqw di margine intorno. */
+.rotolo-tela {
+  position: absolute;
+  left: -7cqw;
+  top: -7cqw;
+  z-index: 4;
+  width: 94cqw;
+  height: 126cqw;
+  pointer-events: none;
+}
+
+/* Appena il canvas comincia ad arrotolare, il cartoncino vero sotto non serve più. */
+.arrotola.is-in-corso .pergamena__foglio .cartoncino {
+  visibility: hidden;
+}
+
+.arrotola .nastro {
+  z-index: 5;
+}
+
+/* Nel gettone il rotolo finito è centrato sull'origine: il suo asse sta sul bordo alto
+   del biglietto, a metà larghezza. */
+.rotolo-tela--gettone {
+  left: -47cqw;
+  top: -7cqw;
+}

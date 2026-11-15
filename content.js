@@ -24,10 +24,10 @@ export default {
     data: '20 novembre 2026',
   },
 
-  // La pergamena arrotolata delle scene 2, 3 e 4.
-  // foto: null per usare quella disegnata.
+  // La pergamena delle scene 2, 3 e 4 è il biglietto stesso arrotolato: si disegna da
+  // questa immagine del cartoncino. Se cambi i testi del biglietto, va rifatta.
   pergamena: {
-    foto: 'assets/img/pergamena.webp',
+    immagine: 'assets/img/biglietto.webp',
   },
 
   tesi: {
