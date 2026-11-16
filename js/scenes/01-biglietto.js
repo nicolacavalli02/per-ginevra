@@ -124,7 +124,11 @@ export default {
 
     function apri() {
       aperta = true;
-      el.classList.add('is-rotto');
+      // Con il video il sigillo disegnato si spezza solo quando il video lo ha già coperto:
+      // altrimenti per un attimo si vedrebbe la crepa disegnata, poi il sigillo di nuovo
+      // intero nel video, poi la crepa vera (visto nella registrazione dal telefono).
+      if (video) ctx.after(220, () => el.classList.add('is-rotto'));
+      else el.classList.add('is-rotto');
       // Il crack: subito senza video, sul fotogramma giusto con il video. Una volta sola.
       let crepato = false;
       const crepa = () => {

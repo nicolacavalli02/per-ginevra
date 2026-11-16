@@ -82,14 +82,17 @@ const VOLUMI = { effetti: 1, ambiente: 1, musica: 1 };
 // Il mix: quanto suona ogni file rispetto agli altri, in dB. I file escono tutti con lo
 // stesso volume percepito (strumenti/prepara-audio.js), quindi qui c'è solo la scelta:
 // 0 = pieno (i gesti di lei), −6 = medio, −14 e oltre = appena sotto, per non dare fastidio.
+// Pennello, tendina e soffio sono fruscii continui: a parità di numero suonano molto più
+// forti dei colpi. Misurati sulla registrazione dal telefono (16/11) erano 16 dB sopra
+// le musiche; con questi valori stanno 4-6 dB sopra il koto.
 const LIVELLI = {
   sigillo: 0,
-  tendina: 0,
+  tendina: -10,
   faro: 2, // il file è un colpo secco, più basso degli altri
   carta: -7,
-  pennello: -6,
+  pennello: -17,
   campanella: -6,
-  soffio: -8,
+  soffio: -12,
   scintille: -15,
   ding: -24,
   chime: -20,
