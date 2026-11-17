@@ -111,7 +111,7 @@ export default {
     busta: 'Il tuo regalo', // scritto sulla busta
     regalo: 'Cena omakase per due',
     locale: 'Sonkei Omakase',
-    citta: 'Roncadelle',
+    citta: 'Roncadelle, Brescia',
     data: '2 gennaio 2027',
 
     // Secondo e terzo: le due parole. I caratteri li scrive il pennello.
